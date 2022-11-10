@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 import net.dv8tion.jda.api.requests.GatewayIntent
 import us.xylight.surveyer.event.Generic
-import us.xylight.surveyer.event.Slash
+import us.xylight.surveyer.event.Interaction
 import us.xylight.surveyer.handler.CommandHandler
 
 fun main() {
@@ -22,7 +22,7 @@ fun main() {
 
     val jda = JDABuilder.createLight(token)
         .enableIntents(intents)
-        .addEventListeners(Generic(), Slash(commandHandler))
+        .addEventListeners(Generic(), Interaction(commandHandler))
         .build()
 
     val commands = jda.updateCommands()
@@ -30,7 +30,8 @@ fun main() {
     commandHandler.commandClasses.forEach { command ->
         commands.addCommands(
             Commands.slash(command.name, command.description)
-            .addOptions(command.options).setGuildOnly(true))
+            .addOptions(command.options).addSubcommands(command.subcommands).setGuildOnly(true)
+        )
     }
 
     commands.queue()
