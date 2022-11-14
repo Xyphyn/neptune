@@ -13,7 +13,7 @@ class Ping : Command {
     override val description = "Returns Discord API ping."
     override val options: List<OptionData> = listOf(OptionData(OptionType.BOOLEAN, "ms",
         "Should the value be in ms? (Default: true)", false))
-    override val subcommands: List<SubcommandData> = Collections.emptyList()
+    override val subcommands: List<Subcommand> = emptyList()
 
     override fun execute(interaction: SlashCommandInteractionEvent) {
         val time = System.currentTimeMillis()
