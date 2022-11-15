@@ -1,16 +1,15 @@
 package us.xylight.surveyer.handler
 
-import us.xylight.surveyer.command.Command
-import us.xylight.surveyer.command.Game
-import us.xylight.surveyer.command.Ping
-import us.xylight.surveyer.command.Subcommand
+import us.xylight.surveyer.command.*
+import us.xylight.surveyer.command.moderation.Moderation
 import us.xylight.surveyer.command.poll.Poll
 
 class CommandHandler {
     val commandClasses: List<Command> = listOf(
         Ping(),
         Poll(),
-        Game()
+        Game(),
+        Moderation()
     )
 
     fun commandFromName(commandName: String): Command? {

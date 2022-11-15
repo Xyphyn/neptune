@@ -15,6 +15,8 @@ repositories {
 dependencies {
     implementation("net.dv8tion:JDA:5.0.0-alpha.22")
     implementation("io.github.cdimascio:dotenv-kotlin:6.3.1")
+    implementation("org.litote.kmongo:kmongo:4.7.2")
+   implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
 }
 
 tasks.test {

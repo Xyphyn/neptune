@@ -10,8 +10,7 @@ class GameManager : EventListener {
         )
 
         fun onEnd(game: Game) {
-            games = games.filterNot { g -> g == game
-            } as MutableList<Game>
+            games = games.filterNot { g -> g == game } as MutableList<Game>
         }
     }
 
