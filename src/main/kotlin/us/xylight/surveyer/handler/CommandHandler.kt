@@ -1,11 +1,17 @@
 package us.xylight.surveyer.handler
 
-import us.xylight.surveyer.command.Command
-import us.xylight.surveyer.command.Ping
+import us.xylight.surveyer.command.*
+import us.xylight.surveyer.command.moderation.Moderation
+import us.xylight.surveyer.command.poll.Poll
+import us.xylight.surveyer.database.DatabaseHandler
 
-class CommandHandler {
+class CommandHandler(db: DatabaseHandler) {
     val commandClasses: List<Command> = listOf(
-        Ping()
+        Ping(),
+        Poll(),
+        Game(),
+        Moderation(db),
+        Warnings(db)
     )
 
     fun commandFromName(commandName: String): Command? {
@@ -13,5 +19,14 @@ class CommandHandler {
             return command
         } }
         return null
+    }
+
+    companion object {
+        fun subcommandFromName(subcommands: List<Subcommand>, name: String): Subcommand? {
+            subcommands.forEach { subCommand -> if (subCommand.name == name) {
+                return subCommand
+            } }
+            return null
+        }
     }
 }

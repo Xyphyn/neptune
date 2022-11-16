@@ -1,36 +1,58 @@
 package us.xylight.surveyer
 
+import dev.minn.jda.ktx.jdabuilder.intents
+import dev.minn.jda.ktx.jdabuilder.light
 import io.github.cdimascio.dotenv.dotenv
-import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.interactions.commands.build.Commands
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
-import us.xylight.surveyer.event.Generic
-import us.xylight.surveyer.event.Slash
+import us.xylight.surveyer.event.Interaction
+import us.xylight.surveyer.games.GameManager
 import us.xylight.surveyer.handler.CommandHandler
+import org.litote.kmongo.coroutine.*
+import org.litote.kmongo.reactivestreams.*
+import us.xylight.surveyer.database.DatabaseHandler
 
 fun main() {
     println("Starting...")
 
     val dotenv = dotenv()
     val token = dotenv["TOKEN"]
+    val mongoURI = dotenv["MONGO"]
+    val database = dotenv["MONGO_DATABASE"]
 
-    val intents = listOf(
+    val gatewayIntents = listOf(
         GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES
     )
 
-    val commandHandler = CommandHandler()
+    val client = KMongo.createClient(mongoURI).coroutine
+    val db = client.getDatabase(database)
 
-    val jda = JDABuilder.createLight(token)
-        .enableIntents(intents)
-        .addEventListeners(Generic(), Slash(commandHandler))
-        .build()
+    val databaseHandler = DatabaseHandler(db)
+    val commandHandler = CommandHandler(databaseHandler)
+
+    val jda = light(token, enableCoroutines = true) {
+        intents += gatewayIntents
+    }
+
+    val listeners = listOf(
+        Interaction(jda, commandHandler), GameManager(jda)
+    )
+
 
     val commands = jda.updateCommands()
 
-    commandHandler.commandClasses.forEach { command ->
-        commands.addCommands(
-            Commands.slash(command.name, command.description)
-            .addOptions(command.options).setGuildOnly(true))
+    for (command in commandHandler.commandClasses) {
+        val data = Commands.slash(command.name, command.description)
+            .addOptions(command.options).setGuildOnly(true)
+
+        command.subcommands.forEach {
+            subcommand -> data.addSubcommands(
+                SubcommandData(subcommand.name, subcommand.description).addOptions(subcommand.options)
+            )
+        }
+
+        commands.addCommands(data)
     }
 
     commands.queue()
