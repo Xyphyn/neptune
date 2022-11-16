@@ -4,7 +4,10 @@ import dev.minn.jda.ktx.events.listener
 import kotlinx.coroutines.runBlocking
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonInteraction
+import us.xylight.surveyer.command.ComponentCommand
 import us.xylight.surveyer.config.Config
 import us.xylight.surveyer.handler.CommandHandler
 import us.xylight.surveyer.util.EmbedUtil
@@ -44,6 +47,14 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                         false
                     ).build()
                 ).queue()
+            }
+        }
+
+        jda.listener<ButtonInteractionEvent> {
+            for (command in commandHandler.commandClasses) {
+                if (command !is ComponentCommand) continue
+                if (!(command.handles.contains(it.button))) continue
+                command.onButtonClick(it)
             }
         }
     }
