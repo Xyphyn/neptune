@@ -1,0 +1,30 @@
+package us.xylight.surveyer.command.moderation
+
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import net.dv8tion.jda.api.interactions.commands.OptionType
+import net.dv8tion.jda.api.interactions.commands.build.OptionData
+import org.litote.kmongo.eq
+import us.xylight.surveyer.command.Subcommand
+import us.xylight.surveyer.config.Config
+import us.xylight.surveyer.database.DatabaseHandler
+import us.xylight.surveyer.database.dataclass.Warning
+import us.xylight.surveyer.util.EmbedUtil
+
+class DeleteWarning(private val db: DatabaseHandler) : Subcommand {
+    override val name = "delwarn"
+    override val description = "Deletes a warning."
+    override val options: List<OptionData> = listOf(
+        OptionData(OptionType.INTEGER, "id", "Warning ID to delete. (Can be found in /warnings)", true)
+    )
+
+    override suspend fun execute(interaction: SlashCommandInteractionEvent) {
+        interaction.deferReply().queue()
+        val id = interaction.getOption("id")!!
+
+        db.warnings.deleteMany(Warning::id eq id.asLong)
+
+        val embed = EmbedUtil.simpleEmbed("Warning Deletion", "${Config.trashIcon} Warning of ID `${id.asLong}` has been deleted.")
+        interaction.hook.sendMessage("").setEmbeds(embed.build()).queue()
+    }
+
+}

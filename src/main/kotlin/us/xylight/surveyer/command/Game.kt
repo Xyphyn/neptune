@@ -1,5 +1,6 @@
 package us.xylight.surveyer.command
 
+import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
@@ -19,8 +20,9 @@ class Game : Command {
         OptionData(OptionType.INTEGER, "seconds", "How long should the game last? (In seconds)", true)
     )
     override val subcommands: List<Subcommand> = Collections.emptyList()
+    override val permission = null
 
-    override fun execute(interaction: SlashCommandInteractionEvent) {
+    override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val sec = interaction.getOption("seconds")!!
         val game = interaction.getOption("game")!!
         val gameType = GameType.gameTypeFromString(game.asString) ?: return

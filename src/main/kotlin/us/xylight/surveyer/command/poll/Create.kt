@@ -14,7 +14,7 @@ class Create : Subcommand {
         OptionData(OptionType.STRING, "choice2", "The second option.", true)
     )
 
-    override fun execute(interaction: SlashCommandInteractionEvent) {
+    override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val question = interaction.getOption("question")!!.asString
         val choices: List<String> =
             listOfNotNull(interaction.getOption("choice1")!!.asString, interaction.getOption("choice2")!!.asString)

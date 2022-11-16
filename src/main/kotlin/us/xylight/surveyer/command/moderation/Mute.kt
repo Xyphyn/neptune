@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import org.ocpsoft.prettytime.PrettyTime
 import us.xylight.surveyer.command.Subcommand
+import us.xylight.surveyer.config.Config
 import us.xylight.surveyer.util.DateParser
 import us.xylight.surveyer.util.EmbedUtil
 import java.util.*
@@ -19,24 +20,23 @@ class Mute : Subcommand {
         OptionData(OptionType.STRING, "reason", "Why are they being muted?", false)
     )
 
-    override fun execute(interaction: SlashCommandInteractionEvent) {
+    override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val user = interaction.getOption("user")!!
         val time = interaction.getOption("time")!!
         val reason = interaction.getOption("reason")?.asString ?: "No reason provided."
 
         val millis = DateParser.millisFromTime(time.asString)
 
-        interaction.guild!!.getMemberById(user.asUser.id)?.timeoutFor(millis, TimeUnit.MILLISECONDS)
+        user.asMember?.timeoutFor(millis, TimeUnit.MILLISECONDS)?.queue()
 
         val p = PrettyTime(Locale.ENGLISH)
         val formatted = p.formatDurationUnrounded(Date(System.currentTimeMillis() + millis))
 
-        interaction.reply("").setEmbeds(
-            EmbedUtil.simpleEmbed(
-                "Timeout",
-                "${user.asUser.asMention} was muted for ${if (formatted == "") "${millis / 1000} seconds" else formatted}"
-            ).addField("Reason", reason, false).build()
-        ).queue()
+        val embed = Moderation.punishEmbed("Timeout", "was muted for ${if (formatted == "") "${millis / 1000} seconds" else formatted}", reason, Config.muteIcon, user.asUser)
+
+        interaction.reply("").setEmbeds(embed.build()).queue()
+
+        Moderation.notifyUser(user.asUser, embed)
     }
 
 }

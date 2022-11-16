@@ -1,5 +1,6 @@
 package us.xylight.surveyer.command
 
+import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
@@ -14,8 +15,9 @@ class Ping : Command {
     override val options: List<OptionData> = listOf(OptionData(OptionType.BOOLEAN, "ms",
         "Should the value be in ms? (Default: true)", false))
     override val subcommands: List<Subcommand> = emptyList()
+    override val permission = null
 
-    override fun execute(interaction: SlashCommandInteractionEvent) {
+    override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val time = System.currentTimeMillis()
 
         interaction.reply("").setEmbeds(EmbedUtil.simpleEmbed("Pong!", "Calculating ping...").build()).flatMap { v ->

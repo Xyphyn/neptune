@@ -1,6 +1,7 @@
 package us.xylight.surveyer.command.poll
 
 import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
@@ -17,8 +18,9 @@ class Poll : Command {
         Create(),
         CreateAdvanced()
     )
+    override val permission = null
 
-    override fun execute(interaction: SlashCommandInteractionEvent) {
+    override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         CommandHandler.subcommandFromName(
             subcommands, interaction.subcommandName!!
         )?.execute(interaction)

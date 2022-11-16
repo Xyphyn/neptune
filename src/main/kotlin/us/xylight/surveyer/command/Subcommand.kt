@@ -12,5 +12,5 @@ interface Subcommand {
     val description: String
     val options: List<OptionData>
 
-    fun execute(interaction: SlashCommandInteractionEvent)
+    suspend fun execute(interaction: SlashCommandInteractionEvent)
 }

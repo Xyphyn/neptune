@@ -13,7 +13,7 @@ class CreateAdvanced : Subcommand {
         OptionData(OptionType.STRING, "choices", "Separate choices with /.", true)
     )
 
-    override fun execute(interaction: SlashCommandInteractionEvent) {
+    override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val question = interaction.getOption("question")!!.asString
         val choicesString = interaction.getOption("choices")!!.asString
         val choices: List<String> = choicesString.split("/").subList(0, 5)

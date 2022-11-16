@@ -1,9 +1,11 @@
 package us.xylight.surveyer.games
 
+import dev.minn.jda.ktx.events.listener
+import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.hooks.EventListener
 
-class GameManager : EventListener {
+class GameManager(jda: JDA) {
     companion object {
         var games: MutableList<Game> = mutableListOf(
 
@@ -14,9 +16,11 @@ class GameManager : EventListener {
         }
     }
 
-    override fun onEvent(event: GenericEvent) {
-        games.forEach {
-            game -> game.onEvent(event)
+    init {
+        jda.listener<GenericEvent> {
+            games.forEach {
+                game -> game.onEvent(it)
+            }
         }
     }
 
