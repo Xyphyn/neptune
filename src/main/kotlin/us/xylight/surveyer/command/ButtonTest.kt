@@ -2,6 +2,7 @@ package us.xylight.surveyer.command
 
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonInteraction
@@ -21,7 +22,7 @@ class ButtonTest : ComponentCommand {
         interaction.reply("").setActionRow(handles).queue()
     }
 
-    override suspend fun onButtonClick(interaction: ButtonInteraction) {
+    override suspend fun onButtonClick(interaction: ButtonInteractionEvent) {
         when (interaction.button.id) {
             "cool-btn" -> {
                 interaction.reply("you clicked 'cool-btn'").queue()

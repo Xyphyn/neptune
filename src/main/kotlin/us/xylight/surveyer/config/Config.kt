@@ -10,5 +10,6 @@ class Config {
         const val muteIcon = "<:WindowsShieldWarning:989709614918553620>"
         const val uacIcon = "<:WindowsShieldUAC:999005696483926017>"
         const val trashIcon = "<:WindowsRecycleBin:1042228356000792586>"
+        const val successIcon = "<:WindowsSuccess:977721596468928533>"
     }
 }

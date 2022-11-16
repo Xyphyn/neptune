@@ -53,7 +53,11 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
         jda.listener<ButtonInteractionEvent> {
             for (command in commandHandler.commandClasses) {
                 if (command !is ComponentCommand) continue
-                if (!(command.handles.contains(it.button))) continue
+                if (command.subcommands.isNotEmpty()) {
+                    command.onButtonClick(it)
+                    continue
+                }
+                if (!command.handles.contains(it.button)) continue
                 command.onButtonClick(it)
             }
         }
