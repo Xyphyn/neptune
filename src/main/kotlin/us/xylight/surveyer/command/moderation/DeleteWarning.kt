@@ -21,7 +21,16 @@ class DeleteWarning(private val db: DatabaseHandler) : Subcommand {
         interaction.deferReply().queue()
         val id = interaction.getOption("id")!!
 
-        db.warnings.deleteMany(Warning::id eq id.asLong)
+        val history = db.warnings.deleteMany(Warning::id eq id.asLong,
+            Warning::guild eq interaction.guild!!.id)
+
+        if (history.deletedCount <= 0) {
+            interaction.hook.sendMessage("").setEmbeds(
+                EmbedUtil.simpleEmbed("Failed to delete", "That warning is not from this guild, or it doesn't exist. It was not deleted.").build()
+            ).queue()
+
+            return
+        }
 
         val embed = EmbedUtil.simpleEmbed("Warning Deletion", "${Config.trashIcon} Warning of ID `${id.asLong}` has been deleted.")
         interaction.hook.sendMessage("").setEmbeds(embed.build()).queue()
