@@ -13,6 +13,8 @@ class DatabaseHandler(db: CoroutineDatabase) {
             Warning::id
         )).limit(1)
 
+        if (search.toList().isEmpty()) return 0
+
         return search.toList()[0].id + 1
     }
 }
