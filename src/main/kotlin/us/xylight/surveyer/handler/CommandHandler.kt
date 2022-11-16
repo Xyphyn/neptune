@@ -11,16 +11,12 @@ class CommandHandler(db: DatabaseHandler) {
         Ping(),
         Poll(),
         Game(),
-        Moderation(db),
-        Warnings(db),
-        ButtonTest()
+        Moderation(db, this),
+        Warnings(db)
     )
 
     fun commandFromName(commandName: String): Command? {
-        commandClasses.forEach { command -> if (command.name == commandName) {
-            return command
-        } }
-        return null
+        return commandClasses.find { it.name == commandName }
     }
 
     companion object {

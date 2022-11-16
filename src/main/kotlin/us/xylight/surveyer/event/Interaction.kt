@@ -14,6 +14,9 @@ import us.xylight.surveyer.util.EmbedUtil
 import java.util.Base64
 
 class Interaction(val jda: JDA, commandHandler: CommandHandler) {
+    companion object {
+        val buttonListeners: MutableMap<String, suspend (interaction: ButtonInteractionEvent) -> Boolean> = mutableMapOf()
+    }
     init {
         jda.listener<SlashCommandInteractionEvent> {
             val command = commandHandler.commandFromName(it.name)
@@ -36,17 +39,27 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
             try {
                 command?.execute(it)
             } catch (exception: Exception) {
-                it.channel.sendMessage("").setEmbeds(
-                    EmbedUtil.simpleEmbed(
-                        "Error",
-                        "${Config.errorIcon} A `${exception::class.simpleName}` occured while executing the command!",
-                        0xff0f0f
-                    ).addField(
-                        "Message",
-                        exception.message.toString(),
-                        false
-                    ).build()
-                ).queue()
+                if (it.user.id != Config.logUser) {
+                    it.channel.sendMessage("").setEmbeds(
+                        EmbedUtil.simpleEmbed(
+                            "Error",
+                            "${Config.errorIcon} An error occurred while executing the command. This has been logged.",
+                            0xff1f1f
+                        ).build()
+                    ).queue()
+                } else {
+                    it.channel.sendMessage("").setEmbeds(
+                        EmbedUtil.simpleEmbed(
+                            "Error",
+                            "${Config.errorIcon} A `${exception::class.simpleName}` occured while executing the command!",
+                            0xff0f0f
+                        ).addField(
+                            "Message",
+                            exception.message.toString(),
+                            false
+                        ).build()
+                    ).queue()
+                }
             }
         }
 
@@ -59,6 +72,13 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                 }
                 if (!command.handles.contains(it.button)) continue
                 command.onButtonClick(it)
+
+            }
+
+            val delete = buttonListeners[it.button.id]?.invoke(it)
+            if (delete == true) {
+                buttonListeners.remove(it.button.id)
+                it.editButton(it.button.asDisabled()).queue()
             }
         }
     }

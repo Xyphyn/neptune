@@ -17,13 +17,13 @@ import us.xylight.surveyer.database.DatabaseHandler
 import us.xylight.surveyer.handler.CommandHandler
 import us.xylight.surveyer.util.EmbedUtil
 
-class Moderation(db: DatabaseHandler) : ComponentCommand {
+class Moderation(db: DatabaseHandler, commandHandler: CommandHandler) : ComponentCommand {
     override val name = "mod"
     override val description = "Moderation commands"
     override val options: List<OptionData> = emptyList()
     override val subcommands: List<Subcommand> = listOf(
         Mute(),
-        Warn(db),
+        Warn(db, commandHandler),
         DeleteWarning(db),
         Unmute()
     )
