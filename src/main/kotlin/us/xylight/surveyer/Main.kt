@@ -16,7 +16,10 @@ import us.xylight.surveyer.database.DatabaseHandler
 fun main() {
     println("Starting...")
 
-    val dotenv = dotenv()
+    val dotenv = dotenv {
+        ignoreIfMissing = true
+        ignoreIfMalformed = true
+    }
     val token = dotenv["TOKEN"]
     val mongoURI = dotenv["MONGO"]
     val database = dotenv["MONGO_DATABASE"]

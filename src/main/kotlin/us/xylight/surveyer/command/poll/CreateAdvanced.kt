@@ -7,7 +7,7 @@ import us.xylight.surveyer.command.Subcommand
 
 class CreateAdvanced : Subcommand {
     override val name = "createadvanced"
-    override val description = "Up to 5 options. Separate questions with /"
+    override val description = "Up to 9 options. Separate questions with /"
     override val options: List<OptionData> = listOf(
         OptionData(OptionType.STRING, "question", "The question to ask.", true),
         OptionData(OptionType.STRING, "choices", "Separate choices with /.", true)
@@ -16,7 +16,10 @@ class CreateAdvanced : Subcommand {
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val question = interaction.getOption("question")!!.asString
         val choicesString = interaction.getOption("choices")!!.asString
-        val choices: List<String> = choicesString.split("/").subList(0, 5)
+        val choices: List<String> = choicesString.split("/")
+            .stream()
+            .limit(9)
+            .toList()
 
         Poll.createPollMessage(Poll.nums, question, choices, interaction)
     }

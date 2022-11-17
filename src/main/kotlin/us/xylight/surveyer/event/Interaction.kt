@@ -15,7 +15,11 @@ import java.util.Base64
 
 class Interaction(val jda: JDA, commandHandler: CommandHandler) {
     companion object {
-        val buttonListeners: MutableMap<String, suspend (interaction: ButtonInteractionEvent) -> Boolean> = mutableMapOf()
+        private val buttonListeners: MutableMap<String, suspend (interaction: ButtonInteractionEvent) -> Boolean> = mutableMapOf()
+
+        fun subscribe(buttonId: String, onChange: suspend (interaction: ButtonInteractionEvent) -> Boolean) {
+            buttonListeners[buttonId] = onChange
+        }
     }
     init {
         jda.listener<SlashCommandInteractionEvent> {

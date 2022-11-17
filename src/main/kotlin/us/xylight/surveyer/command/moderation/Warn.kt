@@ -62,15 +62,14 @@ class Warn(private val db: DatabaseHandler, private val commandHandler: CommandH
             .setEphemeral(silent)
             .queue()
 
-        Interaction.buttonListeners[btn.id!!] = lambda@ {
-            btnInter ->
+        Interaction.subscribe(btn.id!!) lambda@ { btnInter ->
             if (btnInter.user != interaction.user) {
                 btnInter.reply("That button is not yours.").setEphemeral(true).queue()
                 return@lambda false
             }
 
-            (commandHandler.commandClasses.find {
-                    command -> command is Moderation
+            (commandHandler.commandClasses.find { command ->
+                command is Moderation
             }?.subcommands?.find { subcommand ->
                 subcommand is DeleteWarning
             } as DeleteWarning).execute(
