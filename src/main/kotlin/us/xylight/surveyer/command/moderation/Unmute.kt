@@ -3,12 +3,8 @@ package us.xylight.surveyer.command.moderation
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
-import org.ocpsoft.prettytime.PrettyTime
 import us.xylight.surveyer.command.Subcommand
 import us.xylight.surveyer.config.Config
-import us.xylight.surveyer.util.DateParser
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 class Unmute : Subcommand {
     override val name = "unmute"
@@ -26,11 +22,13 @@ class Unmute : Subcommand {
             "Unmute",
             "was unmuted.",
             null,
-            Config.warningIcon,
+            Config.successIcon,
             user.asUser
         )
 
         interaction.reply("").setEmbeds(embed.build()).queue()
+
+        embed.setFooter(interaction.guild?.name, interaction.guild?.iconUrl)
 
         Moderation.notifyUser(user.asUser, embed)
     }

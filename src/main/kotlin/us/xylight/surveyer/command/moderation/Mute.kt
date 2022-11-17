@@ -36,6 +36,8 @@ class Mute : Subcommand {
 
         interaction.reply("").setEmbeds(embed.build()).queue()
 
+        embed.setFooter(interaction.guild?.name, interaction.guild?.iconUrl)
+
         Moderation.notifyUser(user.asUser, embed)
     }
 

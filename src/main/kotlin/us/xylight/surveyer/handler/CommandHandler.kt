@@ -1,5 +1,6 @@
 package us.xylight.surveyer.handler
 
+import net.dv8tion.jda.api.interactions.components.buttons.Button
 import us.xylight.surveyer.command.*
 import us.xylight.surveyer.command.moderation.Moderation
 import us.xylight.surveyer.command.poll.Poll
@@ -10,15 +11,12 @@ class CommandHandler(db: DatabaseHandler) {
         Ping(),
         Poll(),
         Game(),
-        Moderation(db),
+        Moderation(db, this),
         Warnings(db)
     )
 
     fun commandFromName(commandName: String): Command? {
-        commandClasses.forEach { command -> if (command.name == commandName) {
-            return command
-        } }
-        return null
+        return commandClasses.find { it.name == commandName }
     }
 
     companion object {
