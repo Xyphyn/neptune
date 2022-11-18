@@ -19,12 +19,18 @@ import us.xylight.surveyer.util.EmbedUtil
 
 class Translate : Command {
     override val name = "translate"
-    override val description = "Translates text."
+    override val description = "Translates any text to any language!"
     override val options: List<OptionData> = listOf(
         OptionData(OptionType.STRING, "text", "The text to translate.", true),
-        OptionData(OptionType.STRING, "lang", "The language to translate to.", true).addChoices(
+        OptionData(OptionType.STRING, "language", "The language to translate to.", true).addChoices(
             Choice("Spanish", "es"),
-            Choice("Hebrew", "he")
+            Choice("Hebrew", "he"),
+            Choice("Japanese", "ja"),
+            Choice("Chinese", "zh"),
+            Choice("French", "fr"),
+            Choice("German", "de"),
+            Choice("Italian", "it"),
+            Choice("Russian", "ru")
         )
     )
     override val subcommands: List<Subcommand> = listOf()
@@ -41,7 +47,7 @@ class Translate : Command {
 
     @Serializable
     data class TranslationResponse(
-        val detectedLanguage: DetectedLanguage?,
+        val detectedLanguage: DetectedLanguage? = null,
         val translatedText: String
     )
 
@@ -50,17 +56,35 @@ class Translate : Command {
 
     private val client = CommandHandler.httpClient
 
+    /*
+
+            Choice("Spanish", "es"),
+            Choice("Hebrew", "he"),
+            Choice("Japanese", "ja"),
+            Choice("Chinese", "zh"),
+            Choice("French", "fr"),
+            Choice("German", "de"),
+            Choice("Italian", "it"),
+            Choice("Russian", "ru")
+     */
+
     private val langNames: Map<String, String> = mapOf(
         "en" to "\uD83C\uDDEC\uD83C\uDDE7 English",
         "es" to "\uD83C\uDDEA\uD83C\uDDF8 Spanish",
-        "he" to "\uD83C\uDDEE\uD83C\uDDF1 Hebrew"
+        "he" to "\uD83C\uDDEE\uD83C\uDDF1 Hebrew",
+        "ja" to "\uD83C\uDDEF\uD83C\uDDF5 Japanese",
+        "zh" to "\uD83C\uDDE8\uD83C\uDDF3 Chinese",
+        "fr" to "\uD83C\uDDEB\uD83C\uDDF7 French",
+        "de" to "\uD83C\uDDE9\uD83C\uDDEA German",
+        "it" to "\uD83C\uDDEE\uD83C\uDDF9 Italian",
+        "ru" to "\uD83C\uDDF7\uD83C\uDDFA Russian"
     )
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         interaction.deferReply().queue()
 
         val text = interaction.getOption("text")!!
-        val lang = interaction.getOption("lang")!!
+        val lang = interaction.getOption("language")!!
 
         val jsonPayload = Json.encodeToJsonElement(TranslationRequest(text.asString, "auto", lang.asString, "text", ""))
 
@@ -73,12 +97,15 @@ class Translate : Command {
             val resText = res.body?.string()!!
             val translation = Json.decodeFromString<TranslationResponse>(resText)
 
+            val confidence = translation.detectedLanguage?.confidence
+            val stringConfidence = if (confidence == null) "" else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
+
             interaction.hook.sendMessage("")
                 .setEmbeds(
                     EmbedUtil.simpleEmbed("Translation", "")
                         .addField("Input", text.asString, false)
                         .addField("Translated", translation.translatedText, false)
-                        .setFooter("${langNames[translation.detectedLanguage?.language]} to ${langNames[lang.asString]}")
+                        .setFooter("${stringConfidence}to ${langNames[lang.asString]}")
                         .build()
                 )
                 .queue()

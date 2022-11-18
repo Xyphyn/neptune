@@ -36,7 +36,7 @@ class Fact : Subcommand {
             .build()
 
         val response = client.newCall(request).execute()
-        val text = response.body?.string()
+        val text = response.body?.string()?.replace('`', '\'')
 
         val fact = json.decodeFromString<Fact>(text!!)
 
@@ -59,12 +59,12 @@ class Fact : Subcommand {
         Interaction.subscribe(another.id!!) lambda@ {
             btnInter ->
 
-            btnInter.deferEdit().queue()
-
             if (btnInter.user != interaction.user) {
                 btnInter.reply("That button is not yours.").setEphemeral(true).queue()
                 return@lambda false
             }
+
+            btnInter.deferEdit().queue()
 
             fact = fetchFact()
             embed.setDescription(fact.text)
