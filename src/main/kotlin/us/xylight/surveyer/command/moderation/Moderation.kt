@@ -17,7 +17,7 @@ import us.xylight.surveyer.database.DatabaseHandler
 import us.xylight.surveyer.handler.CommandHandler
 import us.xylight.surveyer.util.EmbedUtil
 
-class Moderation(db: DatabaseHandler, commandHandler: CommandHandler) : ComponentCommand {
+class Moderation(db: DatabaseHandler, commandHandler: CommandHandler) : Command {
     override val name = "mod"
     override val description = "Moderation commands"
     override val options: List<OptionData> = emptyList()
@@ -28,19 +28,18 @@ class Moderation(db: DatabaseHandler, commandHandler: CommandHandler) : Componen
         Unmute()
     )
     override val permission = Permission.MODERATE_MEMBERS
-    override val handles: List<Button> = listOf()
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         CommandHandler.subcommandFromName(subcommands, interaction.subcommandName!!)?.execute(interaction)
     }
 
-    override suspend fun onButtonClick(interaction: ButtonInteractionEvent) {
-        for (subcommand in subcommands) {
-            if (subcommand !is ComponentSubcommand) continue
-            if (!subcommand.handles.contains(interaction.button)) return
-            subcommand.onButtonClick(interaction)
-        }
-    }
+//    override suspend fun onButtonClick(interaction: ButtonInteractionEvent) {
+//        for (subcommand in subcommands) {
+//            if (subcommand !is ComponentSubcommand) continue
+//            if (!subcommand.handles.contains(interaction.button)) return
+//            subcommand.onButtonClick(interaction)
+//        }
+//    }
 
     companion object {
         fun notifyUser(user: User, embed: EmbedBuilder) {

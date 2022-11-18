@@ -1,7 +1,8 @@
 package us.xylight.surveyer.handler
 
-import net.dv8tion.jda.api.interactions.components.buttons.Button
 import us.xylight.surveyer.command.*
+import us.xylight.surveyer.command.`fun`.Fun
+import us.xylight.surveyer.command.`fun`.Reddit
 import us.xylight.surveyer.command.moderation.Moderation
 import us.xylight.surveyer.command.poll.Poll
 import us.xylight.surveyer.database.DatabaseHandler
@@ -12,7 +13,8 @@ class CommandHandler(db: DatabaseHandler) {
         Poll(),
         Game(),
         Moderation(db, this),
-        Warnings(db)
+        Warnings(db),
+        Fun()
     )
 
     fun commandFromName(commandName: String): Command? {

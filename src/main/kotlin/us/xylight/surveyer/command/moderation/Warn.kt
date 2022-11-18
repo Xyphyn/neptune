@@ -54,7 +54,7 @@ class Warn(private val db: DatabaseHandler, private val commandHandler: CommandH
 
         embed.setColor(0xfdd100)
 
-        val btn = Button.of(ButtonStyle.SECONDARY, "svy-undowarn-${interaction.id}", "Undo", Emoji.fromFormatted(Config.trashIcon))
+        val btn = Button.of(ButtonStyle.SECONDARY, "moderation:warn:undo:${interaction.user.id}", "Undo", Emoji.fromFormatted(Config.trashIcon))
 //        println(handles)
 
         interaction.hook.sendMessage("").setEmbeds(embed.build())
