@@ -14,8 +14,7 @@ class Fun : ComponentCommand {
     override val description = "Fun commands"
     override val options: List<OptionData> = listOf()
     override val subcommands: List<Subcommand> = listOf(
-        Reddit(),
-        Fact()
+        Reddit()
     )
     override val permission = null
 

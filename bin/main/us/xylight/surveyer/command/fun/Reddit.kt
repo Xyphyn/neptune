@@ -8,14 +8,18 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.interactions.components.buttons.Button
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonInteraction
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
+import okhttp3.OkHttpClient
 import okhttp3.Request
+import us.xylight.surveyer.command.Command
 import us.xylight.surveyer.command.ComponentSubcommand
+import us.xylight.surveyer.command.Subcommand
 import us.xylight.surveyer.config.Config
 import us.xylight.surveyer.database.dataclass.Listing
 import us.xylight.surveyer.event.Interaction
-import us.xylight.surveyer.handler.CommandHandler
 import us.xylight.surveyer.util.EmbedUtil
+import kotlin.math.min
 
 class Reddit : ComponentSubcommand {
 
@@ -24,7 +28,7 @@ class Reddit : ComponentSubcommand {
     override val options: List<OptionData> = listOf(
         OptionData(OptionType.STRING, "subreddit", "What subreddit? (Default r/memes)", false)
     )
-    private val client = CommandHandler.httpClient
+    private val client = OkHttpClient()
 
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {

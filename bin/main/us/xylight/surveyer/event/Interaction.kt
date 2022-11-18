@@ -21,20 +21,16 @@ import java.util.concurrent.TimeUnit
 
 class Interaction(val jda: JDA, commandHandler: CommandHandler) {
     companion object {
-        private val timer = Timer()
 
         private val buttonListeners: MutableMap<String, suspend (interaction: ButtonInteractionEvent) -> Boolean> = mutableMapOf()
 
         suspend fun subscribe(buttonId: String, onChange: suspend (interaction: ButtonInteractionEvent) -> Boolean) {
             buttonListeners[buttonId] = onChange
 
-            val task: TimerTask = object : TimerTask() {
-                override fun run() {
-                    buttonListeners.remove(buttonId)
-                }
+            CoroutineScope(Dispatchers.Default).launch {
+                delay(TimeUnit.MINUTES.toMillis(10))
+                buttonListeners.remove(buttonId)
             }
-
-            timer.schedule(task, TimeUnit.MINUTES.toMillis(10))
         }
 
         fun unSubscribe(buttonId: String) {
