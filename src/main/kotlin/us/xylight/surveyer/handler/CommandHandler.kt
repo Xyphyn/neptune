@@ -1,10 +1,13 @@
 package us.xylight.surveyer.handler
 
-import net.dv8tion.jda.api.interactions.components.buttons.Button
+import io.github.cdimascio.dotenv.dotenv
+import okhttp3.OkHttpClient
 import us.xylight.surveyer.command.*
+import us.xylight.surveyer.command.`fun`.Fun
 import us.xylight.surveyer.command.moderation.Moderation
 import us.xylight.surveyer.command.poll.Poll
 import us.xylight.surveyer.database.DatabaseHandler
+import java.util.concurrent.TimeUnit
 
 class CommandHandler(db: DatabaseHandler) {
     val commandClasses: List<Command> = listOf(
@@ -12,7 +15,9 @@ class CommandHandler(db: DatabaseHandler) {
         Poll(),
         Game(),
         Moderation(db, this),
-        Warnings(db)
+        Warnings(db),
+        Fun(),
+        Translate()
     )
 
     fun commandFromName(commandName: String): Command? {
@@ -26,5 +31,14 @@ class CommandHandler(db: DatabaseHandler) {
             } }
             return null
         }
+
+        val httpClient = OkHttpClient.Builder()
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .build()
+        private val dotenv = dotenv {
+            ignoreIfMissing = true
+            ignoreIfMalformed = true
+        }
+        val translateServer: String = dotenv["TRANSLATOR_URL"]
     }
 }

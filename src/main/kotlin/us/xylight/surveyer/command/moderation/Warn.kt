@@ -1,5 +1,9 @@
 package us.xylight.surveyer.command.moderation
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji
 import net.dv8tion.jda.api.entities.emoji.Emoji
@@ -21,6 +25,7 @@ import us.xylight.surveyer.handler.CommandHandler
 import java.lang.ref.WeakReference
 import java.time.Instant
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 class Warn(private val db: DatabaseHandler, private val commandHandler: CommandHandler) : Subcommand {
     override val name = "warn"
@@ -54,13 +59,17 @@ class Warn(private val db: DatabaseHandler, private val commandHandler: CommandH
 
         embed.setColor(0xfdd100)
 
-        val btn = Button.of(ButtonStyle.SECONDARY, "svy-undowarn-${interaction.id}", "Undo", Emoji.fromFormatted(Config.trashIcon))
-//        println(handles)
+        val btn = Button.of(ButtonStyle.SECONDARY, "moderation:warn:undo:${interaction.id}", "Undo", Emoji.fromFormatted(Config.trashIcon))
 
         interaction.hook.sendMessage("").setEmbeds(embed.build())
             .setActionRow(btn)
             .setEphemeral(silent)
             .queue()
+
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(TimeUnit.SECONDS.toMillis(10))
+            Interaction.unSubscribe(btn, interaction.hook.retrieveOriginal().complete())
+        }
 
         Interaction.subscribe(btn.id!!) lambda@ { btnInter ->
             if (btnInter.user != interaction.user) {

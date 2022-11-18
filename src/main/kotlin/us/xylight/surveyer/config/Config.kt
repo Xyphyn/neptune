@@ -12,5 +12,6 @@ class Config {
         const val trashIcon = "<:WindowsRecycleBin:1042228356000792586>"
         const val successIcon = "<:WindowsSuccess:977721596468928533>"
         const val logUser = "735626570399481878"
+        const val banIcon = "<:WindowsShieldFailure:1042228312476483615>"
     }
 }
