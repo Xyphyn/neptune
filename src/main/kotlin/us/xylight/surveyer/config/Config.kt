@@ -13,5 +13,6 @@ class Config {
         const val successIcon = "<:WindowsSuccess:977721596468928533>"
         const val logUser = "735626570399481878"
         const val banIcon = "<:WindowsShieldFailure:1042228312476483615>"
+        const val loadIcon = "<a:firefoxload:1000449757543677952>"
     }
 }

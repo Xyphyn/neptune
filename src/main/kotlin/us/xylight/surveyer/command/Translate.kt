@@ -6,7 +6,11 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import net.dv8tion.jda.api.Permission
+import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
+import net.dv8tion.jda.api.interactions.Interaction
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.interactions.commands.Command.Choice
@@ -14,8 +18,10 @@ import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import us.xylight.surveyer.config.Config
 import us.xylight.surveyer.handler.CommandHandler
 import us.xylight.surveyer.util.EmbedUtil
+import kotlin.math.roundToInt
 
 class Translate : Command {
     override val name = "translate"
@@ -56,18 +62,6 @@ class Translate : Command {
 
     private val client = CommandHandler.httpClient
 
-    /*
-
-            Choice("Spanish", "es"),
-            Choice("Hebrew", "he"),
-            Choice("Japanese", "ja"),
-            Choice("Chinese", "zh"),
-            Choice("French", "fr"),
-            Choice("German", "de"),
-            Choice("Italian", "it"),
-            Choice("Russian", "ru")
-     */
-
     private val langNames: Map<String, String> = mapOf(
         "en" to "\uD83C\uDDEC\uD83C\uDDE7 English",
         "es" to "\uD83C\uDDEA\uD83C\uDDF8 Spanish",
@@ -80,13 +74,8 @@ class Translate : Command {
         "ru" to "\uD83C\uDDF7\uD83C\uDDFA Russian"
     )
 
-    override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        interaction.deferReply().queue()
-
-        val text = interaction.getOption("text")!!
-        val lang = interaction.getOption("language")!!
-
-        val jsonPayload = Json.encodeToJsonElement(TranslationRequest(text.asString, "auto", lang.asString, "text", ""))
+    private fun fetchTranslation(text: String, lang: String): TranslationResponse {
+        val jsonPayload = Json.encodeToJsonElement(TranslationRequest(text, "auto", lang, "text", ""))
 
         val request = Request.Builder()
             .method("POST", jsonPayload.toString().toRequestBody("application/json".toMediaTypeOrNull()))
@@ -97,21 +86,58 @@ class Translate : Command {
             val resText = res.body?.string()!!
             val translation = Json.decodeFromString<TranslationResponse>(resText)
 
-            val confidence = translation.detectedLanguage?.confidence
-            val stringConfidence = if (confidence == null) "" else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
-
-            interaction.hook.sendMessage("")
-                .setEmbeds(
-                    EmbedUtil.simpleEmbed("Translation", "")
-                        .addField("Input", text.asString, false)
-                        .addField("Translated", translation.translatedText, false)
-                        .setFooter("${stringConfidence}to ${langNames[lang.asString]}")
-                        .build()
-                )
-                .queue()
-
             res.body?.close()
+
+            return translation
         }
     }
 
+
+    override suspend fun execute(interaction: SlashCommandInteractionEvent) {
+        interaction.deferReply().queue()
+
+        val text = interaction.getOption("text")!!
+        val lang = interaction.getOption("language")!!
+
+        val translation = fetchTranslation(text.asString, lang.asString)
+
+        val confidence = translation.detectedLanguage?.confidence?.roundToInt()
+        val stringConfidence =
+            if (confidence == null) "" else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
+
+        interaction.hook.sendMessage("")
+            .setEmbeds(
+                EmbedUtil.simpleEmbed("Translation", "")
+                    .addField("Input", text.asString, false)
+                    .addField("Translated", translation.translatedText, false)
+                    .setFooter("${stringConfidence}to ${langNames[lang.asString]}")
+                    .build()
+            )
+            .queue()
+    }
+
+    fun execute(message: Message, text: String, lang: String, user: User) {
+        println("executing")
+        val reply = message.reply("").setEmbeds(
+            EmbedUtil.simpleEmbed(
+                "Translation",
+                "${Config.loadIcon} Translating... this might take a moment."
+            ).build()
+        ).complete()
+
+        val translation = fetchTranslation(text, lang)
+
+        val confidence = translation.detectedLanguage?.confidence?.roundToInt()
+        val stringConfidence =
+            if (confidence == null) "" else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
+
+        reply.editMessageEmbeds(
+            EmbedUtil.simpleEmbed("Translation", "")
+                .addField("Input", text, false)
+                .addField("Translated", translation.translatedText, false)
+                .setFooter("${stringConfidence}to ${langNames[lang]} • Called by ${user.name}")
+                .build()
+        )
+            .queue()
+    }
 }

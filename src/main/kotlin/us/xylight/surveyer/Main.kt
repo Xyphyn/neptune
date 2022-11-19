@@ -12,6 +12,7 @@ import us.xylight.surveyer.handler.CommandHandler
 import org.litote.kmongo.coroutine.*
 import org.litote.kmongo.reactivestreams.*
 import us.xylight.surveyer.database.DatabaseHandler
+import us.xylight.surveyer.event.Reaction
 
 fun main() {
     println("Starting...")
@@ -25,7 +26,7 @@ fun main() {
     val database = dotenv["MONGO_DATABASE"]
 
     val gatewayIntents = listOf(
-        GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES
+        GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS
     )
 
     val client = KMongo.createClient(mongoURI).coroutine
@@ -39,7 +40,7 @@ fun main() {
     }
 
     val listeners = listOf(
-        Interaction(jda, commandHandler), GameManager(jda)
+        Interaction(jda, commandHandler), GameManager(jda), Reaction(jda, commandHandler)
     )
 
 
