@@ -24,19 +24,32 @@ import us.xylight.surveyer.util.EmbedUtil
 import kotlin.math.roundToInt
 
 class Translate : Command {
+    private val choices: List<Choice> = listOf(
+        Choice("English", "en"),
+        Choice("Spanish", "es"),
+        Choice("Hebrew", "he"),
+        Choice("Japanese", "ja"),
+        Choice("Chinese", "zh"),
+        Choice("French", "fr"),
+        Choice("German", "de"),
+        Choice("Italian", "it"),
+        Choice("Russian", "ru")
+    )
+
     override val name = "translate"
     override val description = "Translates any text to any language!"
     override val options: List<OptionData> = listOf(
         OptionData(OptionType.STRING, "text", "The text to translate.", true),
         OptionData(OptionType.STRING, "language", "The language to translate to.", true).addChoices(
-            Choice("Spanish", "es"),
-            Choice("Hebrew", "he"),
-            Choice("Japanese", "ja"),
-            Choice("Chinese", "zh"),
-            Choice("French", "fr"),
-            Choice("German", "de"),
-            Choice("Italian", "it"),
-            Choice("Russian", "ru")
+            choices
+        ),
+        OptionData(
+            OptionType.STRING,
+            "from",
+            "The language to translate from. Use this if the auto-detection doesn't work.",
+            false
+        ).addChoices(
+            choices
         )
     )
     override val subcommands: List<Subcommand> = listOf()
@@ -74,8 +87,8 @@ class Translate : Command {
         "ru" to "\uD83C\uDDF7\uD83C\uDDFA Russian"
     )
 
-    private fun fetchTranslation(text: String, lang: String): TranslationResponse {
-        val jsonPayload = Json.encodeToJsonElement(TranslationRequest(text, "auto", lang, "text", ""))
+    private fun fetchTranslation(text: String, lang: String, from: String = "auto"): TranslationResponse {
+        val jsonPayload = Json.encodeToJsonElement(TranslationRequest(text, from, lang, "text", ""))
 
         val request = Request.Builder()
             .method("POST", jsonPayload.toString().toRequestBody("application/json".toMediaTypeOrNull()))
@@ -94,35 +107,60 @@ class Translate : Command {
 
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        interaction.deferReply().queue()
-
-        val text = interaction.getOption("text")!!
-        val lang = interaction.getOption("language")!!
-
-        val translation = fetchTranslation(text.asString, lang.asString)
-
-        val confidence = translation.detectedLanguage?.confidence?.roundToInt()
-        val stringConfidence =
-            if (confidence == null) "" else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
-
-        interaction.hook.sendMessage("")
-            .setEmbeds(
+        /*
                 EmbedUtil.simpleEmbed("Translation", "")
                     .addField("Input", text.asString, false)
                     .addField("Translated", translation.translatedText, false)
                     .setFooter("${stringConfidence}to ${langNames[lang.asString]}")
                     .build()
-            )
-            .queue()
+         */
+
+        val text = interaction.getOption("text")!!
+        val lang = interaction.getOption("language")!!
+        val from = interaction.getOption("from")?.asString ?: "auto"
+
+        val embed =
+            EmbedUtil.simpleEmbed("Translation", "")
+                .addField("Input", text.asString, false)
+                .addField("Translated", Config.loadIcon, false)
+                .setFooter("to ${langNames[lang.asString]}")
+
+        interaction.reply("").setEmbeds(embed.build()).queue()
+
+        val translation = fetchTranslation(text.asString, lang.asString, from)
+
+        val confidence = translation.detectedLanguage?.confidence?.roundToInt()
+        val stringConfidence =
+            if (confidence == null || confidence == 0) "${langNames[from] ?: "Unknown"} " else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
+
+
+        if (confidence == null || (confidence <= 15 && from == "auto")) {
+            interaction.channel.sendMessage("").setEmbeds(
+                EmbedUtil.simpleEmbed(
+                    "Notice",
+                    "It looks like the language autodetection was not able to accurately detect the input language. You can use the 'from' parameter in the /translate command to get a more accurate translation."
+                ).build()
+            ).queue()
+        }
+
+        embed.clearFields()
+        embed
+            .addField("Input", text.asString, false)
+            .addField("Translated", translation.translatedText, false)
+            .setFooter("${stringConfidence}to ${langNames[lang.asString]}")
+
+        interaction.hook.editOriginalEmbeds(
+            embed.build()
+        ).queue()
     }
 
     fun execute(message: Message, text: String, lang: String, user: User) {
-        println("executing")
         val reply = message.reply("").setEmbeds(
-            EmbedUtil.simpleEmbed(
-                "Translation",
-                "${Config.loadIcon} Translating... this might take a moment."
-            ).build()
+            EmbedUtil.simpleEmbed("Translation", "")
+                .addField("Input", message.contentRaw, false)
+                .addField("Translated", Config.loadIcon, false)
+                .setFooter("to ${langNames[lang]}")
+                .build()
         ).complete()
 
         val translation = fetchTranslation(text, lang)
