@@ -134,7 +134,7 @@ class Translate : Command {
             if (confidence == null || confidence == 0) "${langNames[from] ?: "Unknown"} " else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
 
 
-        if (confidence == null || (confidence <= 15 && from == "auto")) {
+        if (confidence != null && (confidence <= 15 && from == "auto")) {
             interaction.channel.sendMessage("").setEmbeds(
                 EmbedUtil.simpleEmbed(
                     "Notice",
@@ -168,6 +168,15 @@ class Translate : Command {
         val confidence = translation.detectedLanguage?.confidence?.roundToInt()
         val stringConfidence =
             if (confidence == null) "" else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
+
+        if (confidence != null && confidence <= 15) {
+            message.channel.sendMessage("").setEmbeds(
+                EmbedUtil.simpleEmbed(
+                    "Notice",
+                    "It looks like the language autodetection was not able to accurately detect the input language. You can use the 'from' parameter in the /translate command to get a more accurate translation."
+                ).build()
+            ).queue()
+        }
 
         reply.editMessageEmbeds(
             EmbedUtil.simpleEmbed("Translation", "")
