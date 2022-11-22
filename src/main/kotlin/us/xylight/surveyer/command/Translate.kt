@@ -107,14 +107,6 @@ class Translate : Command {
 
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        /*
-                EmbedUtil.simpleEmbed("Translation", "")
-                    .addField("Input", text.asString, false)
-                    .addField("Translated", translation.translatedText, false)
-                    .setFooter("${stringConfidence}to ${langNames[lang.asString]}")
-                    .build()
-         */
-
         val text = interaction.getOption("text")!!
         val lang = interaction.getOption("language")!!
         val from = interaction.getOption("from")?.asString ?: "auto"
