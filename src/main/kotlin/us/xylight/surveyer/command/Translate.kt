@@ -50,7 +50,8 @@ class Translate : Command {
             false
         ).addChoices(
             choices
-        )
+        ),
+        OptionData(OptionType.BOOLEAN, "silent", "Makes the translation only visible to you.", false)
     )
     override val subcommands: List<Subcommand> = listOf()
     override val permission = null
@@ -110,6 +111,7 @@ class Translate : Command {
         val text = interaction.getOption("text")!!
         val lang = interaction.getOption("language")!!
         val from = interaction.getOption("from")?.asString ?: "auto"
+        val silent = interaction.getOption("silent")?.asBoolean ?: false
 
         val embed =
             EmbedUtil.simpleEmbed("Translation", "")
@@ -117,7 +119,7 @@ class Translate : Command {
                 .addField("Translated", Config.loadIcon, false)
                 .setFooter("to ${langNames[lang.asString]}")
 
-        interaction.reply("").setEmbeds(embed.build()).queue()
+        interaction.reply("").setEmbeds(embed.build()).setEphemeral(silent).queue()
 
         val translation = fetchTranslation(text.asString, lang.asString, from)
 
@@ -126,20 +128,21 @@ class Translate : Command {
             if (confidence == null || confidence == 0) "${langNames[from] ?: "Unknown"} " else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
 
 
-        if (confidence != null && (confidence <= 15 && from == "auto")) {
-            interaction.channel.sendMessage("").setEmbeds(
-                EmbedUtil.simpleEmbed(
-                    "Notice",
-                    "It looks like the language autodetection was not able to accurately detect the input language. You can use the 'from' parameter in the /translate command to get a more accurate translation."
-                ).build()
-            ).queue()
-        }
+
 
         embed.clearFields()
         embed
             .addField("Input", text.asString, false)
             .addField("Translated", translation.translatedText, false)
             .setFooter("${stringConfidence}to ${langNames[lang.asString]}")
+
+        if (confidence != null && (confidence <= 15 && from == "auto")) {
+            embed.addField(
+                "Notice",
+                "The language autodetection couldn't accurately detect the input language. Use the 'from' parameter in the </translate:0> command to get a more accurate translation.",
+                false
+            )
+        }
 
         interaction.hook.editOriginalEmbeds(
             embed.build()
@@ -161,21 +164,22 @@ class Translate : Command {
         val stringConfidence =
             if (confidence == null) "" else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
 
-        if (confidence != null && confidence <= 15) {
-            message.channel.sendMessage("").setEmbeds(
-                EmbedUtil.simpleEmbed(
-                    "Notice",
-                    "It looks like the language autodetection was not able to accurately detect the input language. You can use the 'from' parameter in the /translate command to get a more accurate translation."
-                ).build()
-            ).queue()
-        }
-
-        reply.editMessageEmbeds(
+        val embed =
             EmbedUtil.simpleEmbed("Translation", "")
                 .addField("Input", text, false)
                 .addField("Translated", translation.translatedText, false)
                 .setFooter("${stringConfidence}to ${langNames[lang]} • Called by ${user.name}")
-                .build()
+
+        if (confidence != null && confidence <= 15) {
+            embed.addField(
+                "Notice",
+                "The language autodetection couldn't accurately detect the input language. Use the 'from' parameter in the </translate:0> command to get a more accurate translation.",
+                false
+            )
+        }
+
+        reply.editMessageEmbeds(
+            embed.build()
         )
             .queue()
     }
