@@ -94,6 +94,8 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                             false
                         ).build()
                     ).queue()
+
+                    exception.printStackTrace()
                 }
             }
         }

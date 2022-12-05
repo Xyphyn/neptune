@@ -32,8 +32,9 @@ fun main() {
     val client = KMongo.createClient(mongoURI).coroutine
     val db = client.getDatabase(database)
 
-    val databaseHandler = DatabaseHandler(db)
-    val commandHandler = CommandHandler(databaseHandler)
+    DatabaseHandler.create(db)
+
+    val commandHandler = CommandHandler()
 
     val jda = light(token, enableCoroutines = true) {
         intents += gatewayIntents

@@ -12,7 +12,7 @@ import us.xylight.surveyer.database.DatabaseHandler
 import us.xylight.surveyer.database.dataclass.Warning
 import us.xylight.surveyer.util.EmbedUtil
 
-class DeleteWarning(private val db: DatabaseHandler) : Subcommand {
+class DeleteWarning : Subcommand {
     override val name = "delwarn"
     override val description = "Deletes a warning."
     override val options: List<OptionData> = listOf(
@@ -23,7 +23,7 @@ class DeleteWarning(private val db: DatabaseHandler) : Subcommand {
         interaction.deferReply().queue()
         val id = interaction.getOption("id")!!
 
-        val history = db.warnings.deleteMany(Warning::id eq id.asLong,
+        val history = DatabaseHandler.warnings!!.deleteMany(Warning::id eq id.asLong,
             Warning::guild eq interaction.guild!!.id)
 
         if (history.deletedCount <= 0) {
@@ -41,7 +41,7 @@ class DeleteWarning(private val db: DatabaseHandler) : Subcommand {
     suspend fun execute(interaction: ButtonInteraction, id: Long) {
         interaction.deferReply().queue()
 
-        val history = db.warnings.deleteMany(Warning::id eq id,
+        val history = DatabaseHandler.warnings!!.deleteMany(Warning::id eq id,
             Warning::guild eq interaction.guild!!.id)
 
         if (history.deletedCount <= 0) {

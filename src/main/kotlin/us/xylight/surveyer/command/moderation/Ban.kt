@@ -30,6 +30,9 @@ class Ban : Subcommand {
         val reason = interaction.getOption("reason")?.asString ?: "No reason provided."
 
         val embed = Moderation.punishEmbed("Ban", "was banned.", reason, Config.banIcon, user.asUser)
+
+        embed.setColor(0xff0f0f)
+
         val btn = Button.of(ButtonStyle.SECONDARY, "moderation:ban:undo:${interaction.id}", "Undo", Emoji.fromFormatted(Config.trashIcon))
 
         CoroutineScope(Dispatchers.Default).launch {

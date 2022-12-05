@@ -33,6 +33,7 @@ class Mute : Subcommand {
         val formatted = p.formatDurationUnrounded(Date(System.currentTimeMillis() + millis))
 
         val embed = Moderation.punishEmbed("Timeout", "was muted for ${if (formatted == "") "${millis / 1000} seconds" else formatted}", reason, Config.muteIcon, user.asUser)
+        embed.setColor(0xfdd100)
 
         interaction.reply("").setEmbeds(embed.build()).queue()
 

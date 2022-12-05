@@ -9,13 +9,13 @@ import us.xylight.surveyer.command.poll.Poll
 import us.xylight.surveyer.database.DatabaseHandler
 import java.util.concurrent.TimeUnit
 
-class CommandHandler(db: DatabaseHandler) {
+class CommandHandler() {
     val commandClasses: List<Command> = listOf(
         Ping(),
         Poll(),
         Game(),
-        Moderation(db, this),
-        Warnings(db),
+        Moderation(this),
+        Warnings(),
         Fun(),
         Translate()
     )
