@@ -12,7 +12,7 @@ import us.xylight.surveyer.database.dataclass.Warning
 import us.xylight.surveyer.util.EmbedUtil
 import java.lang.Error
 
-class Warnings(private val db: DatabaseHandler) : Command {
+class Warnings() : Command {
     override val name = "warnings"
     override val description = "Get warnings for a user."
     override val options: List<OptionData> = listOf(
@@ -30,7 +30,7 @@ class Warnings(private val db: DatabaseHandler) : Command {
         val member = interaction.getOption("member")!!.asUser
         val guild = interaction.guild!!
 
-        val warnings = db.warnings.find(
+        val warnings = DatabaseHandler.warnings!!.find(
             Warning::user eq member.id,
             Warning::guild eq guild.id
         )
