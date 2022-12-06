@@ -6,6 +6,7 @@ import us.xylight.surveyer.command.*
 import us.xylight.surveyer.command.`fun`.Fun
 import us.xylight.surveyer.command.moderation.Moderation
 import us.xylight.surveyer.command.poll.Poll
+import us.xylight.surveyer.command.time.Time
 import us.xylight.surveyer.database.DatabaseHandler
 import java.util.concurrent.TimeUnit
 
@@ -17,7 +18,8 @@ class CommandHandler() {
         Moderation(this),
         Warnings(),
         Fun(),
-        Translate()
+        Translate(),
+        Time()
     )
 
     fun commandFromName(commandName: String): Command? {

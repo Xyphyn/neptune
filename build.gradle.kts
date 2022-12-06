@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "us.xylight.surveyer"
-version = "0.2.0-SNAPSHOT"
+version = "1.0.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
