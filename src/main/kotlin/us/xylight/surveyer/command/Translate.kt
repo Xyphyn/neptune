@@ -39,7 +39,7 @@ class Translate : Command {
     override val name = "translate"
     override val description = "Translates any text to any language!"
     override val options: List<OptionData> = listOf(
-        OptionData(OptionType.STRING, "text", "The text to translate.", true),
+        OptionData(OptionType.STRING, "text", "The text to translate.", true).setMaxLength(1000),
         OptionData(OptionType.STRING, "language", "The language to translate to.", true).addChoices(
             choices
         ),
@@ -150,6 +150,7 @@ class Translate : Command {
     }
 
     fun execute(message: Message, text: String, lang: String, user: User) {
+        if (message.contentRaw.length > 1000) return
         val reply = message.reply("").setEmbeds(
             EmbedUtil.simpleEmbed("Translation", "")
                 .addField("Input", message.contentRaw, false)

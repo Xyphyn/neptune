@@ -62,6 +62,7 @@ fun main() {
 
     commands.queue()
 
+
     jda.awaitReady()
     println("Ready.")
 }
