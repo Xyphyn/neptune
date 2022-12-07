@@ -22,7 +22,7 @@ class Add : Subcommand {
         OptionData(OptionType.INTEGER, "id", "The ID of the role picker to modify.", true),
         OptionData(OptionType.ROLE, "role", "What role to add.", true),
         OptionData(OptionType.STRING, "label", "What should the role be labelled?", false).setMaxLength(20),
-        OptionData(OptionType.STRING, "description", "What should the role be described as?", false).setMaxLength(30),
+        OptionData(OptionType.STRING, "description", "What should the role be described as?", false).setMaxLength(100),
         OptionData(OptionType.STRING, "emoji", "What emoji should the role have?", false)
     )
 
