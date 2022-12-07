@@ -48,7 +48,7 @@ class Roles : Command {
         	if (selection.unassigned != null) {
         		interaction.guild!!.addRoleToMember(
         			interaction.member!!,
-        			interaction.jda.getRoleById(selection.unassigned)
+        			interaction.jda.getRoleById(selection.unassigned)!!
         		)
         	}
         }
