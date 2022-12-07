@@ -35,6 +35,10 @@ object DatabaseHandler {
         roles!!.insertOne(roleSelect)
     }
 
+    suspend fun deleteRoleSelection(selectId: Long) {
+        roles!!.deleteOne(RoleSelect::id eq selectId)
+    }
+
     suspend fun getAvailableRoleSelectId(): Long {
         val search = roles!!.find(null).sort(descending(
             RoleSelect::id

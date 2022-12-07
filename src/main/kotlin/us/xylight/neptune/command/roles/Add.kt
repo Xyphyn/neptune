@@ -52,14 +52,14 @@ class Add : Subcommand {
         selection.roles.forEach {
             if (it.roleId == -1L) return@forEach
             var option = SelectOption(it.label, it.roleId.toString(), it.description)
-            if (emoji != null) option = option.withEmoji(Emoji.fromFormatted(emoji))
+            if (it.emoji != null) option = option.withEmoji(Emoji.fromFormatted(it.emoji!!))
             selectOptions.add(option)
         }
 
         val selectMenu = StringSelectMenu(
             "svy:roles:menu:${selection.id}",
             "Pick your roles...",
-            IntRange(1, 5),
+            IntRange(1, 20),
             false,
             selectOptions
         )

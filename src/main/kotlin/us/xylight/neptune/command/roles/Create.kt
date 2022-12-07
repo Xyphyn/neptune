@@ -30,7 +30,7 @@ class Create : Subcommand {
         val selectMenu = StringSelectMenu(
             "svy:roles:menu:$availableRoleId",
             "Pick your roles...",
-            IntRange(1, 5),
+            IntRange(1, 20),
             false,
             listOf(
                 SelectOption("?", "null", "Use /roles add to add some roles!")

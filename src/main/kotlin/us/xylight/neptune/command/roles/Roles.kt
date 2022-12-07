@@ -16,7 +16,7 @@ class Roles : Command {
     override val name = "roles"
     override val description = "Commands for selection roles."
     override val options: List<OptionData> = listOf()
-    override val subcommands: List<Subcommand> = listOf(Create(), Add())
+    override val subcommands: List<Subcommand> = listOf(Create(), Add(), Delete())
     override val permission = Permission.MANAGE_ROLES
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
