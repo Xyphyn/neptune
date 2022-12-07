@@ -19,12 +19,14 @@ class Create : Subcommand {
     override val description = "Creates a role selection menu."
     override val options: List<OptionData> = listOf(
         OptionData(OptionType.STRING, "title", "What roles is this selector for?", false),
-        OptionData(OptionType.STRING, "description", "What should the description be?", false)
+        OptionData(OptionType.STRING, "description", "What should the description be?", false),
+        OptionData(OptionType.ROLE, "unassigned", "What role should be used if the user has none?", false)
     )
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val title = interaction.getOption("title")?.asString ?: "Roles"
         val description = interaction.getOption("description")?.asString ?: "Select your roles here!"
+        val unassigned = interaction.getOption("unassigned")?.asRole
         interaction.deferReply().queue()
 
         val availableRoleId = DatabaseHandler.getAvailableRoleSelectId()
@@ -52,7 +54,8 @@ class Create : Subcommand {
                     Role(-1, "?", "Use /roles add to add some roles!", null)
                 ),
                 message.idLong,
-                message.channel.idLong
+                message.channel.idLong,
+                unassigned?.idLong
             )
         )
     }

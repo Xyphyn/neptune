@@ -5,7 +5,8 @@ data class RoleSelect(
     val guildId: Long,
     val roles: MutableList<Role>,
     val msgId: Long,
-    val channelId: Long
+    val channelId: Long,
+    val unassigned: Long?
 )
 
 data class Role(
