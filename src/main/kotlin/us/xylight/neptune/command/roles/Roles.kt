@@ -44,15 +44,6 @@ class Roles : Command {
             return
         }
 
-        if (interaction.values.isEmpty()) {
-        	if (selection.unassigned != null) {
-        		interaction.guild!!.addRoleToMember(
-        			interaction.member!!,
-        			interaction.jda.getRoleById(selection.unassigned)!!
-        		)
-        	}
-        }
-
         val values: List<Long> = selection.roles.map { role -> role.roleId }
 
         values.forEach { value ->
