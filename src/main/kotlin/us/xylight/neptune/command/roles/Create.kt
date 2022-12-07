@@ -18,11 +18,13 @@ class Create : Subcommand {
     override val name = "create"
     override val description = "Creates a role selection menu."
     override val options: List<OptionData> = listOf(
-        OptionData(OptionType.STRING, "title", "What roles is this selector for?", false)
+        OptionData(OptionType.STRING, "title", "What roles is this selector for?", false),
+        OptionData(OptionType.STRING, "description", "What should the description be?", false)
     )
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val title = interaction.getOption("title")?.asString ?: "Roles"
+        val description = interaction.getOption("description")?.asString ?: "Select your roles here!"
         interaction.deferReply().queue()
 
         val availableRoleId = DatabaseHandler.getAvailableRoleSelectId()
@@ -37,7 +39,7 @@ class Create : Subcommand {
             )
         )
 
-        interaction.hook.editOriginalEmbeds(EmbedUtil.simpleEmbed(title, "Select your roles here!").setFooter("ID: $availableRoleId").build())
+        interaction.hook.editOriginalEmbeds(EmbedUtil.simpleEmbed(title, description).setFooter("ID: $availableRoleId").build())
             .setActionRow(selectMenu).queue()
 
         val message = interaction.hook.retrieveOriginal().complete()
