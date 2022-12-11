@@ -7,8 +7,8 @@ plugins {
     application
 }
 
-group = "us.xylight.surveyer"
-version = "0.2.0-SNAPSHOT"
+group = "us.xylight.neptune"
+version = "1.0.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -29,7 +29,7 @@ tasks.jar {
     doFirst {
         manifest {
             attributes(
-                "Main-Class" to "us.xylight.surveyer.MainKt"
+                "Main-Class" to "us.xylight.neptune.MainKt"
             )
         }
     }
@@ -44,5 +44,5 @@ tasks.withType<KotlinCompile> {
 }
 
 application {
-    mainClass.set("us.xylight.surveyer.MainKt")
+    mainClass.set("us.xylight.neptune.MainKt")
 }
