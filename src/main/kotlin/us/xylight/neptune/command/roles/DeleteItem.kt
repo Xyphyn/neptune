@@ -13,9 +13,9 @@ import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Role
 import us.xylight.neptune.util.EmbedUtil
 
-class EditItem : Subcommand {
-    override val name = "edititem"
-    override val description = "Edits a specified item in the role picker."
+class DeleteItem : Subcommand {
+    override val name = "deleteitem"
+    override val description = "Deletes a specified item in the role picker."
     override val options: List<OptionData> = listOf(
         OptionData(OptionType.INTEGER, "id", "The ID of the role picker to edit.", true),
         OptionData(
@@ -24,21 +24,11 @@ class EditItem : Subcommand {
             "What order does the role appear in? (TOP TO BOTTOM, STARTING AT 1)",
             true
         ),
-        OptionData(OptionType.ROLE, "role", "What role to change it to", true),
-        OptionData(OptionType.STRING, "label", "What should the new label be?", false).setMaxLength(20),
-        OptionData(OptionType.STRING, "description", "What should the role be described as?", false).setMaxLength(100),
-        OptionData(OptionType.STRING, "emoji", "What emoji should the role have?", false),
-        OptionData(OptionType.BOOLEAN, "delete", "Should it be deleted?", false)
     )
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val id = interaction.getOption("id")!!.asLong
         val index = interaction.getOption("item")!!.asInt
-        val role = interaction.getOption("role")!!.asRole
-        val label = interaction.getOption("label")?.asString
-        val description = interaction.getOption("description")?.asString
-        val emoji = interaction.getOption("emoji")?.asString
-        val delete = interaction.getOption("delete")?.asBoolean ?: false
 
         val selection = DatabaseHandler.getRoleSelection(id)
 
@@ -52,16 +42,7 @@ class EditItem : Subcommand {
 
         if (selection.guildId != interaction.guild!!.idLong) return
 
-        selection.roles.removeAt(index)
-        selection.roles.add(
-            index,
-            Role(
-                role.idLong,
-                label ?: selection.roles[index].label,
-                description ?: selection.roles[index].description,
-                emoji ?: selection.roles[index].emoji
-            )
-        )
+        selection.roles.removeAt(index - 1)
 
         val selectOptions = mutableListOf<SelectOption>()
 
@@ -75,7 +56,7 @@ class EditItem : Subcommand {
         val selectMenu = StringSelectMenu(
             "svy:roles:menu:${selection.id}",
             "Pick your roles...",
-            IntRange(1, 20),
+            IntRange(0, 20),
             false,
             selectOptions
         )

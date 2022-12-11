@@ -16,7 +16,7 @@ class Roles : Command {
     override val name = "roles"
     override val description = "Commands for selection roles."
     override val options: List<OptionData> = listOf()
-    override val subcommands: List<Subcommand> = listOf(Create(), Add(), Delete(), Edit())
+    override val subcommands: List<Subcommand> = listOf(Create(), Add(), Delete(), Edit(), DeleteItem())
     override val permission = Permission.MANAGE_ROLES
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
@@ -58,7 +58,6 @@ class Roles : Command {
 
         interaction.values.forEach { value ->
             val roleId = interaction.jda.getRoleById(value) ?: return@forEach
-
 
             interaction.guild!!.addRoleToMember(
                 interaction.member!!,

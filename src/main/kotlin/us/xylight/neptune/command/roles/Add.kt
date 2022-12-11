@@ -49,6 +49,7 @@ class Add : Subcommand {
 
         val selectOptions = mutableListOf<SelectOption>()
 
+        selection.roles.removeIf { role -> role.roleId == -1L }
         selection.roles.forEach {
             if (it.roleId == -1L) return@forEach
             var option = SelectOption(it.label, it.roleId.toString(), it.description)
@@ -59,7 +60,7 @@ class Add : Subcommand {
         val selectMenu = StringSelectMenu(
             "svy:roles:menu:${selection.id}",
             "Pick your roles...",
-            IntRange(1, 20),
+            IntRange(0, 20),
             false,
             selectOptions
         )
