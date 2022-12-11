@@ -113,6 +113,14 @@ class Translate : Command {
         val from = interaction.getOption("from")?.asString ?: "auto"
         val silent = interaction.getOption("silent")?.asBoolean ?: false
 
+        if (Config.getConfig(interaction.guild!!.idLong)?.translation?.enabled == false) {
+            interaction.reply("").setEphemeral(true).setEmbeds(
+                EmbedUtil.simpleEmbed("Disabled", "Translation is not enabled in this server.", 0xff0f0f).build()
+            ).queue()
+
+            return
+        }
+
         val embed =
             EmbedUtil.simpleEmbed("Translation", "")
                 .addField("Input", text.asString, false)

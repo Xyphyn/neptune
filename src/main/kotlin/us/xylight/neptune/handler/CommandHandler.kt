@@ -3,6 +3,7 @@ package us.xylight.neptune.handler
 import io.github.cdimascio.dotenv.dotenv
 import okhttp3.OkHttpClient
 import us.xylight.neptune.command.*
+import us.xylight.neptune.command.config.Config
 import us.xylight.neptune.command.`fun`.Fun
 import us.xylight.neptune.command.moderation.Moderation
 import us.xylight.neptune.command.poll.Poll
@@ -22,7 +23,7 @@ class CommandHandler() {
         Translate(),
         Time(),
         Roles(),
-        Test()
+        Config()
     )
 
     fun commandFromName(commandName: String): Command? {

@@ -27,7 +27,6 @@ class Moderation(commandHandler: CommandHandler) : Command {
         DeleteWarning(),
         Unmute(),
         Ban(),
-        Config()
     )
     override val permission = Permission.MODERATE_MEMBERS
 
