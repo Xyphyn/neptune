@@ -12,11 +12,10 @@ import us.xylight.neptune.command.time.Time
 import us.xylight.neptune.database.DatabaseHandler
 import java.util.concurrent.TimeUnit
 
-class CommandHandler() {
+class CommandHandler {
     val commandClasses: List<Command> = listOf(
         Ping(),
         Poll(),
-        Game(),
         Moderation(this),
         Warnings(),
         Fun(),
