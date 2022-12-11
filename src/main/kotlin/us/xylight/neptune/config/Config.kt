@@ -10,7 +10,7 @@ object Config {
 
     suspend fun getConfig(serverId: Long): ServerConfig? {
         if (configs[serverId] == null) {
-            val config = DatabaseHandler.getConfig(serverId)
+            val config: ServerConfig? = runCatching { DatabaseHandler.getConfig(serverId) }.getOrNull()
             if (config != null) return config
         }
         return configs[serverId]

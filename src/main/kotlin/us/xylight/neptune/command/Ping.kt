@@ -24,7 +24,7 @@ class Ping : Command {
             v.editOriginalEmbeds(
                 EmbedUtil.simpleEmbed(
                     "Pong!",
-                    String.format("%s Test Ping: %d", Config.wifiIcon, (System.currentTimeMillis() - time))
+                    String.format("%sPing: %d", Config.wifiIcon, (System.currentTimeMillis() - time))
                 ).build()
             )
         }.queue()

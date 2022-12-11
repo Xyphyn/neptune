@@ -5,10 +5,7 @@ import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.descending
 import org.litote.kmongo.eq
 import us.xylight.neptune.config.Config
-import us.xylight.neptune.database.dataclass.ModerationConfig
-import us.xylight.neptune.database.dataclass.RoleSelect
-import us.xylight.neptune.database.dataclass.ServerConfig
-import us.xylight.neptune.database.dataclass.Warning
+import us.xylight.neptune.database.dataclass.*
 
 object DatabaseHandler {
     private var db: CoroutineDatabase? = null
@@ -52,7 +49,7 @@ object DatabaseHandler {
         val result = configs!!.findOne(ServerConfig::serverId eq serverId)
 
         if (result == null)
-            configs!!.insertOne(ServerConfig(serverId, ModerationConfig()))
+            configs!!.insertOne(ServerConfig(serverId, ModerationConfig(), TranslationConfig()))
 
         return configs!!.findOne(ServerConfig::serverId eq serverId)
     }
@@ -62,8 +59,6 @@ object DatabaseHandler {
 
         Config.updateConfig(serverId, config)
     }
-
-
 
     suspend fun getAvailableWarningId(): Long {
         val search = warnings!!.find(null).sort(descending(

@@ -16,7 +16,6 @@ class Fun : ComponentCommand {
     override val subcommands: List<Subcommand> = listOf(
         Reddit(),
         Fact(),
-        WhoAsked()
     )
     override val permission = null
 

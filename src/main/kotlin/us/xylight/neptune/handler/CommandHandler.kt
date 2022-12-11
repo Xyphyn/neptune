@@ -21,7 +21,8 @@ class CommandHandler() {
         Fun(),
         Translate(),
         Time(),
-        Roles()
+        Roles(),
+        Test()
     )
 
     fun commandFromName(commandName: String): Command? {
