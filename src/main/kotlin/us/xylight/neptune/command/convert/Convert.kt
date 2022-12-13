@@ -12,7 +12,8 @@ class Convert : Command {
     override val description = "Converts certain units."
     override val options: List<OptionData> = listOf()
     override val subcommands: List<Subcommand> = listOf(
-        Temperature()
+        Temperature(),
+        Length()
     )
     override val permission = null
 
