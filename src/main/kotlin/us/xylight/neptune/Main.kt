@@ -3,6 +3,7 @@ package us.xylight.neptune
 import dev.minn.jda.ktx.jdabuilder.intents
 import dev.minn.jda.ktx.jdabuilder.light
 import io.github.cdimascio.dotenv.dotenv
+import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
@@ -20,6 +21,7 @@ fun main() {
         ignoreIfMissing = true
         ignoreIfMalformed = true
     }
+
     val token = dotenv["TOKEN"]
     val mongoURI = dotenv["MONGO"]
     val database = dotenv["MONGO_DATABASE"]
@@ -39,10 +41,10 @@ fun main() {
         intents += gatewayIntents
     }
 
+
     val listeners = listOf(
         Interaction(jda, commandHandler), Reaction(jda, commandHandler)
     )
-
 
     val commands = jda.updateCommands()
 
@@ -64,4 +66,6 @@ fun main() {
 
     jda.awaitReady()
     println("Ready.")
+
+    jda.presence.setPresence(Activity.watching("${jda.guilds.size} guilds"), false)
 }
