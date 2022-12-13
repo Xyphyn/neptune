@@ -13,7 +13,8 @@ class Convert : Command {
     override val options: List<OptionData> = listOf()
     override val subcommands: List<Subcommand> = listOf(
         Temperature(),
-        Length()
+        Length(),
+        Weight()
     )
     override val permission = null
 
