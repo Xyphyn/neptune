@@ -14,13 +14,15 @@ class Edit : Subcommand {
     override val options: List<OptionData> = listOf(
         OptionData(OptionType.INTEGER, "id", "The ID of the role picker to edit.", true),
         OptionData(OptionType.STRING, "newtitle", "The new title for the role picker.", true),
-        OptionData(OptionType.STRING, "newdesc", "The new description for the role picker.", true)
+        OptionData(OptionType.STRING, "newdesc", "The new description for the role picker.", true),
+        OptionData(OptionType.ROLE, "newunassigned", "The new unassigned role.", false)
     )
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val id = interaction.getOption("id")!!.asLong
         val title = interaction.getOption("newtitle")!!.asString
         val desc = interaction.getOption("newdesc")!!.asString
+        val unassigned = interaction.getOption("newunassigned")?.asRole
 
         val selection = DatabaseHandler.getRoleSelection(id)
 
@@ -32,6 +34,10 @@ class Edit : Subcommand {
             return
         }
 
+        if (unassigned != null) {
+            selection.unassigned = unassigned.idLong
+        }
+
         if (selection.guildId != interaction.guild!!.idLong) return
 
         (interaction.guild!!.getGuildChannelById(selection.channelId) as TextChannel).editMessageEmbedsById(
@@ -41,6 +47,8 @@ class Edit : Subcommand {
 
         interaction.reply("").setEphemeral(true)
             .setEmbeds(EmbedUtil.simpleEmbed("Updated", "Updated that role picker.").build()).queue()
+
+        DatabaseHandler.replaceRoleSelection(id, selection)
     }
 
 }
