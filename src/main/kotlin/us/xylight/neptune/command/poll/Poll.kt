@@ -1,14 +1,13 @@
 package us.xylight.neptune.command.poll
 
 import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Command
+import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
-import us.xylight.neptune.handler.CommandHandler
 
 class Poll : Command {
     override val name = "poll"

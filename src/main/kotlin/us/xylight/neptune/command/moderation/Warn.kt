@@ -17,7 +17,7 @@ import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Warning
 import us.xylight.neptune.event.Interaction
-import us.xylight.neptune.handler.CommandHandler
+import us.xylight.neptune.command.CommandHandler
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 

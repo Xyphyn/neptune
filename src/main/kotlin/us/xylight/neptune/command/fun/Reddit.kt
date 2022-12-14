@@ -14,7 +14,7 @@ import us.xylight.neptune.command.ComponentSubcommand
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.dataclass.Listing
 import us.xylight.neptune.event.Interaction
-import us.xylight.neptune.handler.CommandHandler
+import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.util.EmbedUtil
 
 class Reddit : ComponentSubcommand {

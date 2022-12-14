@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.database.DatabaseHandler
-import us.xylight.neptune.database.dataclass.Role
 import us.xylight.neptune.util.EmbedUtil
 
 class DeleteItem : Subcommand {

@@ -1,22 +1,18 @@
 package us.xylight.neptune.event
 
 import dev.minn.jda.ktx.events.listener
-import kotlinx.coroutines.*
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
-import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.buttons.Button
+import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.roles.Roles
 import us.xylight.neptune.config.Config
-import us.xylight.neptune.handler.CommandHandler
 import us.xylight.neptune.util.EmbedUtil
-import java.util.Base64
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class Interaction(val jda: JDA, commandHandler: CommandHandler) {
@@ -25,7 +21,7 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
 
         private val buttonListeners: MutableMap<String, suspend (interaction: ButtonInteractionEvent) -> Boolean> = mutableMapOf()
 
-        suspend fun subscribe(buttonId: String, onChange: suspend (interaction: ButtonInteractionEvent) -> Boolean) {
+        fun subscribe(buttonId: String, onChange: suspend (interaction: ButtonInteractionEvent) -> Boolean) {
             buttonListeners[buttonId] = onChange
 
             val task: TimerTask = object : TimerTask() {

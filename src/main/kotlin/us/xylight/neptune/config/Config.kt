@@ -4,7 +4,7 @@ import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.ServerConfig
 
 object Config {
-    // TODO make config system half decentD
+    // TODO make config system half decent
 
     private val configs = mutableMapOf<Long, ServerConfig>()
 

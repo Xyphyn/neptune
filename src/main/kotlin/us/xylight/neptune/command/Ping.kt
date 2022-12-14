@@ -1,13 +1,10 @@
 package us.xylight.neptune.command
 
-import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.util.EmbedUtil
-import java.util.Collections
 
 class Ping : Command {
     override val name = "ping"

@@ -1,6 +1,7 @@
 package us.xylight.neptune.command.moderation
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import org.ocpsoft.prettytime.PrettyTime
@@ -27,12 +28,31 @@ class Mute : Subcommand {
 
         val millis = DateParser.millisFromTime(time.asString)
 
-        user.asMember?.timeoutFor(millis, TimeUnit.MILLISECONDS)?.queue()
+        try {
+            user.asMember?.timeoutFor(millis, TimeUnit.MILLISECONDS)?.queue()
+        } catch (e: Exception) {
+            interaction.reply("").setEmbeds(
+                EmbedUtil.simpleEmbed(
+                    "Error",
+                    "Unable to mute that user. Do they have a higher permission than Neptune?",
+                    0xff0f0f
+                ).build()
+            ).queue()
+
+            return
+        }
+
 
         val p = PrettyTime(Locale.ENGLISH)
         val formatted = p.formatDurationUnrounded(Date(System.currentTimeMillis() + millis))
 
-        val embed = Moderation.punishEmbed("Timeout", "was muted for ${if (formatted == "") "${millis / 1000} seconds" else formatted}", reason, Config.muteIcon, user.asUser)
+        val embed = Moderation.punishEmbed(
+            "Timeout",
+            "was muted for ${if (formatted == "") "${millis / 1000} seconds" else formatted}",
+            reason,
+            Config.muteIcon,
+            user.asUser
+        )
         embed.setColor(0xfdd100)
 
         interaction.reply("").setEmbeds(embed.build()).queue()

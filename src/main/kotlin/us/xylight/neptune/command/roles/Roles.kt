@@ -1,15 +1,13 @@
 package us.xylight.neptune.command.roles
 
 import net.dv8tion.jda.api.Permission
-import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Command
+import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.database.DatabaseHandler
-import us.xylight.neptune.handler.CommandHandler
 import us.xylight.neptune.util.EmbedUtil
 
 class Roles : Command {

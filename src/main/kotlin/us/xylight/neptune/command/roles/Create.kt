@@ -1,14 +1,11 @@
 package us.xylight.neptune.command.roles
 
-import dev.minn.jda.ktx.interactions.components.EntitySelectMenu
 import dev.minn.jda.ktx.interactions.components.SelectOption
 import dev.minn.jda.ktx.interactions.components.StringSelectMenu
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Subcommand
-import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Role
 import us.xylight.neptune.database.dataclass.RoleSelect

@@ -4,9 +4,9 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Subcommand
+import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
-import us.xylight.neptune.config.Config
 
 class TranslationConfig : Subcommand {
     override val name = "translation"
@@ -20,7 +20,7 @@ class TranslationConfig : Subcommand {
         val reaction = interaction.getOption("reaction")?.asBoolean
         val enabled = interaction.getOption("enabled")?.asBoolean
 
-        interaction.deferReply().queue()
+        interaction.deferReply().setEphemeral(true).queue()
 
         val currentConfig = Config.getConfig(interaction.guild!!.id.toLong())!!
 

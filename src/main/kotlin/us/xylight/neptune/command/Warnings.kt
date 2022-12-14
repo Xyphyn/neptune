@@ -1,7 +1,6 @@
 package us.xylight.neptune.command
 
 import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
@@ -9,8 +8,6 @@ import org.litote.kmongo.eq
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Warning
-import us.xylight.neptune.util.EmbedUtil
-import java.lang.Error
 
 class Warnings() : Command {
     override val name = "warnings"

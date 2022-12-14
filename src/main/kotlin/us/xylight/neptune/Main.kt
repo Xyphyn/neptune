@@ -7,11 +7,11 @@ import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
-import us.xylight.neptune.event.Interaction
-import us.xylight.neptune.handler.CommandHandler
-import org.litote.kmongo.coroutine.*
-import org.litote.kmongo.reactivestreams.*
+import org.litote.kmongo.coroutine.coroutine
+import org.litote.kmongo.reactivestreams.KMongo
+import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.database.DatabaseHandler
+import us.xylight.neptune.event.Interaction
 import us.xylight.neptune.event.Reaction
 
 fun main() {
@@ -42,9 +42,8 @@ fun main() {
     }
 
 
-    val listeners = listOf(
-        Interaction(jda, commandHandler), Reaction(jda, commandHandler)
-    )
+    Interaction(jda, commandHandler)
+    Reaction(jda, commandHandler)
 
     val commands = jda.updateCommands()
 
