@@ -21,7 +21,7 @@ import us.xylight.neptune.command.CommandHandler
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
-class Warn(private val commandHandler: CommandHandler) : Subcommand {
+object Warn : Subcommand {
     override val name = "warn"
     override val description = "Warns a user."
     override val options: List<OptionData> = listOf(
@@ -77,11 +77,7 @@ class Warn(private val commandHandler: CommandHandler) : Subcommand {
                 return@lambda false
             }
 
-            (commandHandler.commandClasses.find { command ->
-                command is Moderation
-            }?.subcommands?.find { subcommand ->
-                subcommand is DeleteWarning
-            } as DeleteWarning).execute(
+            DeleteWarning.execute(
                 btnInter,
                 id
             )
@@ -100,6 +96,7 @@ class Warn(private val commandHandler: CommandHandler) : Subcommand {
                 Warning::user eq user.asUser.id,
                 Warning::time gt (System.currentTimeMillis() / 1000) - 259200
             )
+
         if (warnings.toList().size >= config.moderation.warningThresh) {
             user.asMember?.timeoutFor(3, TimeUnit.HOURS)?.queue()
 

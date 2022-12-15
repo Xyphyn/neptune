@@ -12,7 +12,7 @@ import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
 
-class DeleteItem : Subcommand {
+object DeleteItem : Subcommand {
     override val name = "deleteitem"
     override val description = "Deletes a specified item in the role picker."
     override val options: List<OptionData> = listOf(
@@ -65,7 +65,7 @@ class DeleteItem : Subcommand {
                 selection.msgId,
                 " "
             ).setActionRow(selectMenu).queue()
-        }.getOrElse { error ->
+        }.getOrElse {
             DatabaseHandler.deleteRoleSelection(id)
         }
 

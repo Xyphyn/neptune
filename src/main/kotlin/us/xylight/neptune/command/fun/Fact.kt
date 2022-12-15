@@ -15,7 +15,7 @@ import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.event.Interaction
 
-class Fact : Subcommand {
+object Fact : Subcommand {
     override val name = "fact"
     override val description = "Fetches a random fact."
     override val options: List<OptionData> = listOf()

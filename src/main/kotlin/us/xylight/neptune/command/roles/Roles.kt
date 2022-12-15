@@ -7,18 +7,20 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Command
 import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.Subcommand
+import us.xylight.neptune.command.config.Config
+import us.xylight.neptune.command.config.Config.get
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
 
-class Roles : Command {
+object Roles : Command {
     override val name = "roles"
     override val description = "Commands for selection roles."
     override val options: List<OptionData> = listOf()
-    override val subcommands: List<Subcommand> = listOf(Create(), Add(), Delete(), Edit(), DeleteItem())
+    override val subcommands: List<Subcommand> = listOf(Create, Add, Delete, Edit, DeleteItem)
     override val permission = Permission.MANAGE_ROLES
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        CommandHandler.subcommandFromName(subcommands, interaction.subcommandName!!)?.execute(interaction)
+        subcommands[interaction.name]?.execute(interaction)
     }
 
     suspend fun onSelect(interaction: StringSelectInteractionEvent) {

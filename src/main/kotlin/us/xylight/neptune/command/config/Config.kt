@@ -7,14 +7,14 @@ import us.xylight.neptune.command.Command
 import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.Subcommand
 
-class Config : Command {
+object Config : Command {
     override val name = "config"
     override val description = "General configuration."
     override val options: List<OptionData> = listOf()
-    override val subcommands: List<Subcommand> = listOf(TranslationConfig(), ModerationConfig())
+    override val subcommands: List<Subcommand> = listOf(TranslationConfig, ModerationConfig)
     override val permission = Permission.ADMINISTRATOR
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        CommandHandler.subcommandFromName(subcommands, interaction.subcommandName!!)?.execute(interaction)
+        subcommands[interaction.name]?.execute(interaction)
     }
 }

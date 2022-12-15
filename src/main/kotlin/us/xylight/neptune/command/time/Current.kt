@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.util.EmbedUtil
 
-class Current : Subcommand {
+object Current : Subcommand {
     override val name = "current"
     override val description = "Gets the current time (PST)."
     override val options: List<OptionData> = listOf()

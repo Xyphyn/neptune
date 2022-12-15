@@ -18,7 +18,7 @@ import us.xylight.neptune.util.EmbedUtil
 import java.util.concurrent.TimeUnit
 
 
-class Ban : Subcommand {
+object Ban : Subcommand {
     override val name = "ban"
     override val description = "Bans a user from the guild."
     override val options: List<OptionData> = listOf(

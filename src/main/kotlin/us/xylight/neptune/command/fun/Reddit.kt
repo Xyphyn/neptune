@@ -17,7 +17,7 @@ import us.xylight.neptune.event.Interaction
 import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.util.EmbedUtil
 
-class Reddit : ComponentSubcommand {
+object Reddit : ComponentSubcommand {
 
     override val name = "reddit"
     override val description = "Fetches posts from reddit."

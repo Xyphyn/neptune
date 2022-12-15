@@ -6,18 +6,18 @@ import us.xylight.neptune.command.ComponentCommand
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.command.CommandHandler
 
-class Fun : ComponentCommand {
+object Fun : ComponentCommand {
     override val name = "fun"
     override val description = "Fun commands"
     override val options: List<OptionData> = listOf()
     override val subcommands: List<Subcommand> = listOf(
-        Reddit(),
-        Fact(),
+        Reddit,
+        Fact,
     )
     override val permission = null
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        CommandHandler.subcommandFromName(subcommands, interaction.subcommandName!!)?.execute(interaction)
+        subcommands[interaction.name]?.execute(interaction)
     }
 
 }

@@ -8,7 +8,7 @@ import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.util.EmbedUtil
 import java.text.DecimalFormat
 
-class Temperature : Subcommand {
+object Temperature : Subcommand {
     /**
      * An enum to represent temperature units.
      * @param from Converts from Kelvin to the enum's unit.

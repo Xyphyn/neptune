@@ -9,7 +9,7 @@ import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Warning
 
-class Warnings() : Command {
+object Warnings : Command {
     override val name = "warnings"
     override val description = "Get warnings for a user."
     override val options: List<OptionData> = listOf(

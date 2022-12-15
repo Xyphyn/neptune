@@ -18,7 +18,7 @@ import us.xylight.neptune.config.Config
 import us.xylight.neptune.util.EmbedUtil
 import kotlin.math.roundToInt
 
-class Translate : Command {
+object Translate : Command {
     private val choices: List<Choice> = listOf(
         Choice("English", "en"),
         Choice("Spanish", "es"),

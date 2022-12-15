@@ -8,7 +8,7 @@ import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
 
-class ModerationConfig : Subcommand {
+object ModerationConfig : Subcommand {
     override val name = "moderation"
     override val description = "Moderation configuration."
     override val options: List<OptionData> = listOf(

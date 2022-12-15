@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.util.EmbedUtil
 
-class Ping : Command {
+object Ping : Command {
     override val name = "ping"
     override val description = "Returns Discord API ping."
     override val options: List<OptionData> = listOf(OptionData(OptionType.BOOLEAN, "ms",
@@ -21,7 +21,7 @@ class Ping : Command {
             v.editOriginalEmbeds(
                 EmbedUtil.simpleEmbed(
                     "Pong!",
-                    String.format("%sPing: %d", Config.wifiIcon, (System.currentTimeMillis() - time))
+                    String.format("%s Ping: %d", Config.wifiIcon, (System.currentTimeMillis() - time))
                 ).build()
             )
         }.queue()

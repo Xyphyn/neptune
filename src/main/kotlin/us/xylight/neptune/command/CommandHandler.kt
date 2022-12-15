@@ -13,16 +13,16 @@ import java.util.concurrent.TimeUnit
 
 class CommandHandler {
     val commandClasses: List<Command> = listOf(
-        Ping(),
-        Poll(),
-        Moderation(this),
-        Warnings(),
-        Fun(),
-        Translate(),
-        Time(),
-        Roles(),
-        Config(),
-        Convert()
+        Ping,
+        Poll,
+        Moderation,
+        Warnings,
+        Fun,
+        Translate,
+        Time,
+        Roles,
+        Config,
+        Convert
     )
 
     fun commandFromName(commandName: String): Command? {
@@ -30,16 +30,10 @@ class CommandHandler {
     }
 
     companion object {
-        fun subcommandFromName(subcommands: List<Subcommand>, name: String): Subcommand? {
-            subcommands.forEach { subCommand -> if (subCommand.name == name) {
-                return subCommand
-            } }
-            return null
-        }
-
         val httpClient = OkHttpClient.Builder()
             .connectTimeout(5, TimeUnit.SECONDS)
             .build()
+
         private val dotenv = dotenv {
             ignoreIfMissing = true
             ignoreIfMalformed = true

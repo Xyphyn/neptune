@@ -13,7 +13,7 @@ import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Role
 import us.xylight.neptune.util.EmbedUtil
 
-class Add : Subcommand {
+object Add : Subcommand {
     override val name = "add"
     override val description = "Add a role to a selection menu."
     override val options: List<OptionData> = listOf(
@@ -47,7 +47,7 @@ class Add : Subcommand {
 
         val selectOptions = mutableListOf<SelectOption>()
 
-        selection.roles.removeIf { role -> role.roleId == -1L }
+        selection.roles.removeIf { it.roleId == -1L }
         selection.roles.forEach {
             if (it.roleId == -1L) return@forEach
             var option = SelectOption(it.label, it.roleId.toString(), it.description)
@@ -67,7 +67,7 @@ class Add : Subcommand {
             selection.msgId,
             " "
         ).setActionRow(selectMenu).queue()
-        }.getOrElse { error ->
+        }.getOrElse {
             DatabaseHandler.deleteRoleSelection(id)
         }
 

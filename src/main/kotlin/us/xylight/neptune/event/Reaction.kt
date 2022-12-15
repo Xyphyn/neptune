@@ -24,7 +24,7 @@ class Reaction(jda: JDA, commandHandler: CommandHandler) {
         jda.listener<MessageReactionAddEvent> {
             if (Config.getConfig(it.guild.idLong)?.translation?.reactions == false) return@listener
 
-            val emoji = flags[it.reaction.emoji.asReactionCode] ?: return@listener
+            flags[it.reaction.emoji.asReactionCode] ?: return@listener
 
             val reactMessage = it.retrieveMessage().complete()
             if (reactMessage.getReaction(it.reaction.emoji)?.count!! > 1) return@listener

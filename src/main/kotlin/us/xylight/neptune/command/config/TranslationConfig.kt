@@ -8,7 +8,7 @@ import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
 
-class TranslationConfig : Subcommand {
+object TranslationConfig : Subcommand {
     override val name = "translation"
     override val description = "Translation configuration."
     override val options: List<OptionData> = listOf(

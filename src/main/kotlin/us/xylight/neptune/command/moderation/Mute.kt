@@ -12,7 +12,7 @@ import us.xylight.neptune.util.EmbedUtil
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class Mute : Subcommand {
+object Mute : Subcommand {
     override val name = "mute"
     override val description = "Times out a user."
     override val options: List<OptionData> = listOf(

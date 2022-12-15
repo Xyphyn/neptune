@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Subcommand
 
-class CreateAdvanced : Subcommand {
+object CreateAdvanced : Subcommand {
     override val name = "createadvanced"
     override val description = "Up to 9 options. Separate questions with /"
     override val options: List<OptionData> = listOf(
@@ -21,6 +21,6 @@ class CreateAdvanced : Subcommand {
             .limit(9)
             .toList()
 
-        Poll.createPollMessage(Poll.nums, question, choices, interaction)
+        Poll.createPollMessage(question, choices, interaction)
     }
 }

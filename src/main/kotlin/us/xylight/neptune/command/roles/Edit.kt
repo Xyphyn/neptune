@@ -8,7 +8,7 @@ import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
 
-class Edit : Subcommand {
+object Edit : Subcommand {
     override val name = "edit"
     override val description = "Edits the title/description of a role selection."
     override val options: List<OptionData> = listOf(

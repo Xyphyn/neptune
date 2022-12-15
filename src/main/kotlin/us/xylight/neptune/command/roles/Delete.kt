@@ -8,7 +8,7 @@ import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
 
-class Delete : Subcommand {
+object Delete : Subcommand {
     override val name = "delete"
     override val description = "Deletes a role picker."
     override val options: List<OptionData> = listOf(

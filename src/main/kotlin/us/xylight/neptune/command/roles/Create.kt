@@ -11,7 +11,7 @@ import us.xylight.neptune.database.dataclass.Role
 import us.xylight.neptune.database.dataclass.RoleSelect
 import us.xylight.neptune.util.EmbedUtil
 
-class Create : Subcommand {
+object Create : Subcommand {
     override val name = "create"
     override val description = "Creates a role selection menu."
     override val options: List<OptionData> = listOf(

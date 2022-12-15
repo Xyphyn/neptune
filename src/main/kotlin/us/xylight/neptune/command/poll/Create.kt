@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Subcommand
 
-class Create : Subcommand {
+object Create : Subcommand {
     override val name = "create"
     override val description = "Creates a poll."
     override val options: List<OptionData> = listOf(
@@ -19,7 +19,7 @@ class Create : Subcommand {
         val choices: List<String> =
             listOfNotNull(interaction.getOption("choice1")!!.asString, interaction.getOption("choice2")!!.asString)
 
-        Poll.createPollMessage(Poll.nums, question, choices, interaction)
+        Poll.createPollMessage(question, choices, interaction)
     }
 
 }
