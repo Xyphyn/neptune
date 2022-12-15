@@ -5,3 +5,5 @@ build
 .env
 .fleet
 bin
+*.jar
+!gradle/wrapper/*.jar
