@@ -30,13 +30,13 @@ object Reddit : Subcommand {
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val subreddit = interaction.getOption("subreddit")?.asString ?: "memes"
         val url = "https://reddit.com/r/${subreddit}.json?limit=100"
+        interaction.deferReply().queue()
 
         val request = Request.Builder()
             .url(url)
             .build()
 
         val response = client.newCall(request).execute()
-        interaction.deferReply().queue()
 
         val jsonObj = Json {
             ignoreUnknownKeys = true

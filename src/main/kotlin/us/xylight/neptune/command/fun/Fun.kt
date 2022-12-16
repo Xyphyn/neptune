@@ -18,5 +18,4 @@ object Fun : Command {
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         subcommands[interaction.subcommandName]?.execute(interaction)
     }
-
 }
