@@ -17,6 +17,6 @@ object Convert : Command {
     override val permission = null
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        subcommands[interaction.name]?.execute(interaction)
+        subcommands[interaction.subcommandName]?.execute(interaction)
     }
 }

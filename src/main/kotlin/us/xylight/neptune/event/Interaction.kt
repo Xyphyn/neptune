@@ -16,38 +16,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class Interaction(val jda: JDA, commandHandler: CommandHandler) {
-    companion object {
-        private val timer = Timer()
-
-        private val buttonListeners: MutableMap<String, suspend (interaction: ButtonInteractionEvent) -> Boolean> = mutableMapOf()
-
-        fun subscribe(buttonId: String, onChange: suspend (interaction: ButtonInteractionEvent) -> Boolean) {
-            buttonListeners[buttonId] = onChange
-
-            val task: TimerTask = object : TimerTask() {
-                override fun run() {
-                    buttonListeners.remove(buttonId)
-                }
-            }
-
-            timer.schedule(task, TimeUnit.MINUTES.toMillis(10))
-        }
-
-        fun unSubscribe(buttonId: String) {
-            buttonListeners.remove(buttonId)
-        }
-
-        fun unSubscribe(button: Button, message: Message) {
-            val disabledButtons: MutableList<Button> = mutableListOf()
-            val actionRow: ActionRow? = message.actionRows.find { actionRow -> actionRow.buttons.contains(button) }
-
-            actionRow?.buttons?.forEachIndexed {
-                    index, btn  -> disabledButtons.add(index, btn.asDisabled())
-            }
-
-            message.editMessageComponents(ActionRow.of(disabledButtons)).queue()
-        }
-    }
     init {
         jda.listener<SlashCommandInteractionEvent> {
             val command = commandHandler.commandFromName(it.name)
@@ -96,18 +64,10 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
             }
         }
 
-        jda.listener<ButtonInteractionEvent> {
-            val delete = buttonListeners[it.button.id]?.invoke(it)
-            if (delete == true) {
-                buttonListeners.remove(it.button.id)
-                it.editButton(it.button.asDisabled()).queue()
-            }
-        }
-
         jda.listener<StringSelectInteractionEvent> {
             if (it.componentId.split("svy:roles:menu:").size < 2) return@listener
 
-            (commandHandler.commandFromName("roles") as Roles).onSelect(it)
+            Roles.onSelect(it)
         }
     }
 }

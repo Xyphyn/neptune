@@ -1,5 +1,6 @@
 package us.xylight.neptune.command.moderation
 
+import dev.minn.jda.ktx.interactions.components.button
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -17,9 +18,10 @@ import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Warning
 import us.xylight.neptune.event.Interaction
-import us.xylight.neptune.command.CommandHandler
 import java.time.Instant
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 object Warn : Subcommand {
     override val name = "warn"
@@ -50,40 +52,30 @@ object Warn : Subcommand {
         )
 
         val embed =
-            Moderation.punishEmbed("Warning", "was warned.", reason, Config.warningIcon, user.asUser)
+            Moderation.punishEmbed("Warning", "was warned.", reason, Config.warningIcon.toString(), user.asUser)
 
         embed.setColor(0xfdd100)
 
-        val btn = Button.of(
+        val btn = interaction.jda.button(
             ButtonStyle.SECONDARY,
-            "moderation:warn:undo:${interaction.id}",
             "Undo",
-            Emoji.fromFormatted(Config.trashIcon)
-        )
+            Emoji.fromFormatted(Config.trashIcon.toString()),
+            false,
+            Duration.parse("60s"),
+            interaction.user
+        ) {
+            interaction.hook.retrieveOriginal().queue {
+                message ->
+                interaction.hook.editOriginal("").setActionRow(message.buttons[0].asDisabled()).queue()
+            }
+
+            DeleteWarning.execute(it, id)
+        }
 
         interaction.hook.sendMessage("").setEmbeds(embed.build())
             .setActionRow(btn)
             .setEphemeral(silent)
             .queue()
-
-        CoroutineScope(Dispatchers.Default).launch {
-            delay(TimeUnit.SECONDS.toMillis(10))
-            Interaction.unSubscribe(btn, interaction.hook.retrieveOriginal().complete())
-        }
-
-        Interaction.subscribe(btn.id!!) lambda@{ btnInter ->
-            if (btnInter.user != interaction.user) {
-                btnInter.reply("That button is not yours.").setEphemeral(true).queue()
-                return@lambda false
-            }
-
-            DeleteWarning.execute(
-                btnInter,
-                id
-            )
-
-            return@lambda true
-        }
 
         embed.setFooter(interaction.guild?.name, interaction.guild?.iconUrl)
 
@@ -100,19 +92,19 @@ object Warn : Subcommand {
         if (warnings.toList().size >= config.moderation.warningThresh) {
             user.asMember?.timeoutFor(3, TimeUnit.HOURS)?.queue()
 
-            val embed = Moderation.punishEmbed(
+            val notification = Moderation.punishEmbed(
                 "Timeout",
                 "was muted for 3 hours",
                 "Automatic mute after ${config.moderation.warningThresh} warnings within 72 hours.",
-                Config.muteIcon,
+                Config.muteIcon.toString(),
                 user.asUser
             )
 
-            embed.setColor(0xfdd100)
+            notification.setColor(0xfdd100)
 
-
-            interaction.channel.sendMessage("").setEmbeds(embed.build()).queue()
-            Moderation.notifyUser(user.asUser, embed)
+            interaction.channel.sendMessage("").setEmbeds(notification.build()).queue()
+            Moderation.notifyUser(user.asUser, notification)
         }
+
     }
 }

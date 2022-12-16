@@ -5,10 +5,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Command
-import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.Subcommand
-import us.xylight.neptune.command.config.Config
-import us.xylight.neptune.command.config.Config.get
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
 

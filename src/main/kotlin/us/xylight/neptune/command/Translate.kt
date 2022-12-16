@@ -119,7 +119,7 @@ object Translate : Command {
         val embed =
             EmbedUtil.simpleEmbed("Translation", "")
                 .addField("Input", text.asString, false)
-                .addField("Translated", Config.loadIcon, false)
+                .addField("Translated", Config.loadIcon.toString(), false)
                 .setFooter("to ${langNames[lang.asString]}")
 
         interaction.reply("").setEmbeds(embed.build()).setEphemeral(silent).queue()

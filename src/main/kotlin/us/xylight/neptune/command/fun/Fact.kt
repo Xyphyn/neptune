@@ -1,5 +1,6 @@
 package us.xylight.neptune.command.`fun`
 
+import dev.minn.jda.ktx.interactions.components.button
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -14,6 +15,7 @@ import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.event.Interaction
+import kotlin.time.Duration
 
 object Fact : Subcommand {
     override val name = "fact"
@@ -45,29 +47,20 @@ object Fact : Subcommand {
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         interaction.deferReply().queue()
 
-        var fact = fetchFact()
-        val embed: EmbedBuilder = EmbedBuilder().setTitle("Random Fact").setDescription(fact.text).setFooter("uselessfacts.jsph.pl").setColor(Config.accent)
+        val embed: EmbedBuilder = EmbedBuilder().setTitle("Random Fact").setDescription(fetchFact().text).setFooter("uselessfacts.jsph.pl").setColor(Config.accent)
 
-        val another = Button.of(ButtonStyle.PRIMARY, "fun:fact:refresh", "Another!")
 
-        interaction.hook.sendMessage("").setEmbeds(embed.build()).setActionRow(another).queue()
+        val btn = interaction.jda.button(ButtonStyle.PRIMARY, "Another!", expiration = Duration.parse("10m"), user = interaction.user) {
+                button ->
 
-        Interaction.subscribe(another.id!!) lambda@ {
-            btnInter ->
+            button.deferEdit().queue()
 
-            if (btnInter.user != interaction.user) {
-                btnInter.reply("That button is not yours.").setEphemeral(true).queue()
-                return@lambda false
-            }
-
-            btnInter.deferEdit().queue()
-
-            fact = fetchFact()
+            val fact = fetchFact()
             embed.setDescription(fact.text)
 
             interaction.hook.editOriginal("").setEmbeds(embed.build()).queue()
-
-            return@lambda false
         }
+
+        interaction.hook.sendMessage("").setEmbeds(embed.build()).setActionRow(btn).queue()
     }
 }

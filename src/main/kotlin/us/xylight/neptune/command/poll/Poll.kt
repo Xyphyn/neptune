@@ -5,9 +5,7 @@ import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Command
-import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.Subcommand
-import us.xylight.neptune.command.config.Config.get
 import us.xylight.neptune.config.Config
 
 object Poll : Command {
@@ -21,9 +19,8 @@ object Poll : Command {
     override val permission = null
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        subcommands[interaction.name]?.execute(interaction)
+        subcommands[interaction.subcommandName]?.execute(interaction)
     }
-
 
     val nums: List<String> = listOf(
         "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"
