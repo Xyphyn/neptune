@@ -9,8 +9,7 @@ import us.xylight.neptune.util.EmbedUtil
 object Ping : Command {
     override val name = "ping"
     override val description = "Returns Discord API ping."
-    override val options: List<OptionData> = listOf(OptionData(OptionType.BOOLEAN, "ms",
-        "Should the value be in ms? (Default: true)", false))
+    override val options: List<OptionData> = listOf()
     override val subcommands: List<Subcommand> = emptyList()
     override val permission = null
 
