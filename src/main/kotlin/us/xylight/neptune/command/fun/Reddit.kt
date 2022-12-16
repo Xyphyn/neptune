@@ -1,6 +1,7 @@
 package us.xylight.neptune.command.`fun`
 
 import dev.minn.jda.ktx.interactions.components.button
+import dev.minn.jda.ktx.messages.Embed
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.dv8tion.jda.api.EmbedBuilder
@@ -66,10 +67,14 @@ object Reddit : Subcommand {
 
         fun skip(i: Int, backwards: Boolean = false): Int {
             var j = i
+            var skipped = 0
 
             while (posts[j].data.stickied || posts[j].data.isNsfw || posts[j].data.pinned || posts[j].data.isVideo) {
-                if (backwards) -- j else ++ j
+                if (backwards) --j else ++j
                 if (i > (posts.size - 1)) break
+                if (++skipped >= 5) {
+                    return -1
+                }
             }
 
             return j
@@ -89,9 +94,9 @@ object Reddit : Subcommand {
         }
 
         fun handleInteraction(buttonInter: ButtonInteractionEvent, backwards: Boolean): Boolean {
-            if (backwards) -- index else ++ index
+            if (backwards) --index else ++index
             if (index > (posts.size - 1) || index < minIndex) {
-                if (backwards) ++ index else -- index
+                if (backwards) ++index else --index
             }
 
             if (buttonInter.user != interaction.user) {
@@ -102,6 +107,16 @@ object Reddit : Subcommand {
             buttonInter.deferEdit().queue()
 
             val prevIndex = skip(index, backwards)
+            if (prevIndex == -1) {
+                interaction.reply("").setEmbeds(
+                    Embed {
+                        title = "Error"
+                        description = "There are too many NSFW posts on that subreddit."
+                        color = 0xff0f0f
+                    }
+                ).queue()
+                return true
+            }
 
             if (prevIndex > (posts.size - 1) || prevIndex < 0) return true
             index = prevIndex
@@ -111,12 +126,20 @@ object Reddit : Subcommand {
             return false
         }
 
-        val next = interaction.jda.button(ButtonStyle.PRIMARY, "Next", expiration = Duration.parse("10m"), user = interaction.user) {
-            button ->
+        val next = interaction.jda.button(
+            ButtonStyle.PRIMARY,
+            "Next",
+            expiration = Duration.parse("10m"),
+            user = interaction.user
+        ) { button ->
             handleInteraction(button, false)
         }
-        val back = interaction.jda.button(ButtonStyle.PRIMARY, "Back", expiration = Duration.parse("10m"), user = interaction.user) {
-                button ->
+        val back = interaction.jda.button(
+            ButtonStyle.PRIMARY,
+            "Back",
+            expiration = Duration.parse("10m"),
+            user = interaction.user
+        ) { button ->
             handleInteraction(button, true)
         }
 
