@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Subcommand
+import java.util.stream.Stream
 
 object CreateAdvanced : Subcommand {
     override val name = "createadvanced"
@@ -16,10 +17,7 @@ object CreateAdvanced : Subcommand {
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val question = interaction.getOption("question")!!.asString
         val choicesString = interaction.getOption("choices")!!.asString
-        val choices: List<String> = choicesString.split("/")
-            .stream()
-            .limit(9)
-            .toList()
+        val choices = choicesString.split("/").take(9)
 
         Poll.createPollMessage(question, choices, interaction)
     }

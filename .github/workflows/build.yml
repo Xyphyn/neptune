@@ -27,3 +27,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build Project
         run: ./gradlew shadowJar
+
+      - uses: "actions/upload-artifact@v3"
+        with:
+          name: JAR
+          path: build/libs/Neptune-*.jar
