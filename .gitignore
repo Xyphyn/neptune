@@ -1,7 +1,9 @@
 build
 .gradle
 .idea
-gradle
+
 .env
 .fleet
 bin
+*.jar
+!gradle/wrapper/*.jar

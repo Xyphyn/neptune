@@ -7,10 +7,8 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.util.EmbedUtil
 import java.text.DecimalFormat
-import java.util.*
-import kotlin.math.roundToInt
 
-class Temperature : Subcommand {
+object Temperature : Subcommand {
     /**
      * An enum to represent temperature units.
      * @param from Converts from Kelvin to the enum's unit.

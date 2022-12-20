@@ -1,23 +1,24 @@
 package us.xylight.neptune.command.`fun`
 
-import kotlinx.serialization.*;
+import dev.minn.jda.ktx.interactions.components.button
+import dev.minn.jda.ktx.messages.Embed
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
-import net.dv8tion.jda.api.interactions.components.buttons.Button
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import okhttp3.Request
-import us.xylight.neptune.command.ComponentSubcommand
+import us.xylight.neptune.command.CommandHandler
+import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.dataclass.Listing
-import us.xylight.neptune.event.Interaction
-import us.xylight.neptune.handler.CommandHandler
 import us.xylight.neptune.util.EmbedUtil
+import kotlin.time.Duration
 
-class Reddit : ComponentSubcommand {
+object Reddit : Subcommand {
 
     override val name = "reddit"
     override val description = "Fetches posts from reddit."
@@ -30,13 +31,13 @@ class Reddit : ComponentSubcommand {
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val subreddit = interaction.getOption("subreddit")?.asString ?: "memes"
         val url = "https://reddit.com/r/${subreddit}.json?limit=100"
+        interaction.deferReply().queue()
 
         val request = Request.Builder()
             .url(url)
             .build()
 
         val response = client.newCall(request).execute()
-        interaction.deferReply().queue()
 
         val jsonObj = Json {
             ignoreUnknownKeys = true
@@ -62,27 +63,18 @@ class Reddit : ComponentSubcommand {
             return
         }
 
-        val next = Button.of(ButtonStyle.PRIMARY, "fun:reddit:next:${interaction.user.id}", "Next")
-        val back = Button.of(ButtonStyle.PRIMARY, "fun:reddit:back:${interaction.user.id}", "Back")
-
-        fun update(index: Int) {
-            val embed = EmbedBuilder().setTitle(posts[index].data.title, "https://reddit.com${posts[index].data.url}")
-                .setDescription(posts[index].data.text!!).setColor(Config.accent)
-                .setFooter("👍 ${posts[index].data.upvotes} 💬 ${posts[index].data.commentCount}")
-
-            if (!(posts[index].data.isVideo)) embed.setImage(posts[index].data.mediaUrl)
-
-            interaction.hook.editOriginal("").setEmbeds(embed.build()).setActionRow(back, next).queue()
-        }
-
         var index = 0
 
         fun skip(i: Int, backwards: Boolean = false): Int {
             var j = i
+            var skipped = 0
 
             while (posts[j].data.stickied || posts[j].data.isNsfw || posts[j].data.pinned || posts[j].data.isVideo) {
-                if (backwards) -- j else ++ j
+                if (backwards) --j else ++j
                 if (i > (posts.size - 1)) break
+                if (++skipped >= 5) {
+                    return -1
+                }
             }
 
             return j
@@ -91,10 +83,20 @@ class Reddit : ComponentSubcommand {
         val minIndex = skip(index)
         index = minIndex
 
+        fun update(index: Int) {
+            val embed = EmbedBuilder().setTitle(posts[index].data.title, "https://reddit.com${posts[index].data.url}")
+                .setDescription(posts[index].data.text!!).setColor(Config.accent)
+                .setFooter("👍 ${posts[index].data.upvotes} 💬 ${posts[index].data.commentCount}")
+
+            if (!(posts[index].data.isVideo)) embed.setImage(posts[index].data.mediaUrl)
+
+            interaction.hook.editOriginal("").setEmbeds(embed.build()).queue()
+        }
+
         fun handleInteraction(buttonInter: ButtonInteractionEvent, backwards: Boolean): Boolean {
-            if (backwards) -- index else ++ index
+            if (backwards) --index else ++index
             if (index > (posts.size - 1) || index < minIndex) {
-                if (backwards) ++ index else -- index
+                if (backwards) ++index else --index
             }
 
             if (buttonInter.user != interaction.user) {
@@ -105,6 +107,16 @@ class Reddit : ComponentSubcommand {
             buttonInter.deferEdit().queue()
 
             val prevIndex = skip(index, backwards)
+            if (prevIndex == -1) {
+                interaction.reply("").setEmbeds(
+                    Embed {
+                        title = "Error"
+                        description = "There are too many NSFW posts on that subreddit."
+                        color = 0xff0f0f
+                    }
+                ).queue()
+                return true
+            }
 
             if (prevIndex > (posts.size - 1) || prevIndex < 0) return true
             index = prevIndex
@@ -114,17 +126,24 @@ class Reddit : ComponentSubcommand {
             return false
         }
 
-        Interaction.subscribe(next.id!!) lambda@{ buttonInter ->
-            if (buttonInter.button.id!!.split(":")[2] != "next") return@lambda false
-
-            return@lambda handleInteraction(buttonInter, false)
+        val next = interaction.jda.button(
+            ButtonStyle.PRIMARY,
+            "Next",
+            expiration = Duration.parse("10m"),
+            user = interaction.user
+        ) { button ->
+            handleInteraction(button, false)
+        }
+        val back = interaction.jda.button(
+            ButtonStyle.PRIMARY,
+            "Back",
+            expiration = Duration.parse("10m"),
+            user = interaction.user
+        ) { button ->
+            handleInteraction(button, true)
         }
 
-        Interaction.subscribe(back.id!!) lambda@ { buttonInter ->
-            if (buttonInter.button.id!!.split(":")[2] != "back") return@lambda false
-
-            return@lambda handleInteraction(buttonInter, true)
-        }
+        interaction.hook.editOriginal("").setActionRow(back, next).queue()
 
         update(index)
 

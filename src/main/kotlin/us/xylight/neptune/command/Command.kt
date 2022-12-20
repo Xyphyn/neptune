@@ -10,5 +10,8 @@ interface Command {
     val options: List<OptionData>
     val subcommands: List<Subcommand>
     val permission: Permission?
+
+    operator fun List<Subcommand>.get(name: String?): Subcommand? = find { it.name == name }
+
     suspend fun execute(interaction: SlashCommandInteractionEvent)
 }

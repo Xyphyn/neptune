@@ -4,11 +4,11 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Subcommand
+import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
-import us.xylight.neptune.config.Config
 
-class ModerationConfig : Subcommand {
+object ModerationConfig : Subcommand {
     override val name = "moderation"
     override val description = "Moderation configuration."
     override val options: List<OptionData> = listOf(
@@ -17,7 +17,7 @@ class ModerationConfig : Subcommand {
     )
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        interaction.deferReply().queue()
+        interaction.deferReply().setEphemeral(true).queue()
 
         val warnThresh = interaction.getOption("warnthreshold")
         val logChannel = interaction.getOption("logchannel")

@@ -12,7 +12,7 @@ import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Warning
 import us.xylight.neptune.util.EmbedUtil
 
-class DeleteWarning : Subcommand {
+object DeleteWarning : Subcommand {
     override val name = "delwarn"
     override val description = "Deletes a warning."
     override val options: List<OptionData> = listOf(

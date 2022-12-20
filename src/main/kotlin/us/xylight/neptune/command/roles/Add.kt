@@ -1,10 +1,8 @@
 package us.xylight.neptune.command.roles
 
-import dev.minn.jda.ktx.generics.getChannel
 import dev.minn.jda.ktx.interactions.components.SelectOption
 import dev.minn.jda.ktx.interactions.components.StringSelectMenu
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
-import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
@@ -15,7 +13,7 @@ import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Role
 import us.xylight.neptune.util.EmbedUtil
 
-class Add : Subcommand {
+object Add : Subcommand {
     override val name = "add"
     override val description = "Add a role to a selection menu."
     override val options: List<OptionData> = listOf(
@@ -32,12 +30,15 @@ class Add : Subcommand {
         val label = interaction.getOption("label")?.asString ?: role.name
         val description = interaction.getOption("description")?.asString ?: ""
         val emoji = interaction.getOption("emoji")?.asString
+        emoji?.let { runCatching { Emoji.fromFormatted(it) }.getOrElse {
+            interaction.replyEmbeds(EmbedUtil.simpleEmbed("Error", "Invalid emoji.", 0xff0f0f).build()).queue()
+            return
+        }  }
 
         val selection = DatabaseHandler.getRoleSelection(id)
 
         if (selection == null) {
-            interaction.reply("")
-                .setEmbeds(EmbedUtil.simpleEmbed("Error", "There is no role picker with that ID.", 0xff0f0f).build())
+            interaction.replyEmbeds(EmbedUtil.simpleEmbed("Error", "There is no role picker with that ID.", 0xff0f0f).build())
                 .queue()
 
             return
@@ -49,7 +50,7 @@ class Add : Subcommand {
 
         val selectOptions = mutableListOf<SelectOption>()
 
-        selection.roles.removeIf { role -> role.roleId == -1L }
+        selection.roles.removeIf { it.roleId == -1L }
         selection.roles.forEach {
             if (it.roleId == -1L) return@forEach
             var option = SelectOption(it.label, it.roleId.toString(), it.description)
@@ -69,7 +70,7 @@ class Add : Subcommand {
             selection.msgId,
             " "
         ).setActionRow(selectMenu).queue()
-        }.getOrElse { error ->
+        }.getOrElse {
             DatabaseHandler.deleteRoleSelection(id)
         }
 

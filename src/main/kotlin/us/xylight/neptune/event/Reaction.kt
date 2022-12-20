@@ -3,9 +3,9 @@ package us.xylight.neptune.event
 import dev.minn.jda.ktx.events.listener
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
+import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.Translate
 import us.xylight.neptune.config.Config
-import us.xylight.neptune.handler.CommandHandler
 
 class Reaction(jda: JDA, commandHandler: CommandHandler) {
     private val flags: Map<String, String> = mutableMapOf(
@@ -24,7 +24,7 @@ class Reaction(jda: JDA, commandHandler: CommandHandler) {
         jda.listener<MessageReactionAddEvent> {
             if (Config.getConfig(it.guild.idLong)?.translation?.reactions == false) return@listener
 
-            val emoji = flags[it.reaction.emoji.asReactionCode] ?: return@listener
+            flags[it.reaction.emoji.asReactionCode] ?: return@listener
 
             val reactMessage = it.retrieveMessage().complete()
             if (reactMessage.getReaction(it.reaction.emoji)?.count!! > 1) return@listener

@@ -1,7 +1,6 @@
 package us.xylight.neptune.command.`fun`
 
 import dev.minn.jda.ktx.interactions.components.button
-import dev.minn.jda.ktx.messages.EmbedBuilder
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -12,14 +11,13 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import okhttp3.Request
+import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.event.Interaction
-import us.xylight.neptune.handler.CommandHandler
-import java.util.Timer
-import java.util.TimerTask
+import kotlin.time.Duration
 
-class Fact : Subcommand {
+object Fact : Subcommand {
     override val name = "fact"
     override val description = "Fetches a random fact."
     override val options: List<OptionData> = listOf()
@@ -49,29 +47,20 @@ class Fact : Subcommand {
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         interaction.deferReply().queue()
 
-        var fact = fetchFact()
-        val embed: EmbedBuilder = EmbedBuilder().setTitle("Random Fact").setDescription(fact.text).setFooter("uselessfacts.jsph.pl").setColor(Config.accent)
+        val embed: EmbedBuilder = EmbedBuilder().setTitle("Random Fact").setDescription(fetchFact().text).setFooter("uselessfacts.jsph.pl").setColor(Config.accent)
 
-        val another = Button.of(ButtonStyle.PRIMARY, "fun:fact:refresh", "Another!")
 
-        interaction.hook.sendMessage("").setEmbeds(embed.build()).setActionRow(another).queue()
+        val btn = interaction.jda.button(ButtonStyle.PRIMARY, "Another!", expiration = Duration.parse("10m"), user = interaction.user) {
+                button ->
 
-        Interaction.subscribe(another.id!!) lambda@ {
-            btnInter ->
+            button.deferEdit().queue()
 
-            if (btnInter.user != interaction.user) {
-                btnInter.reply("That button is not yours.").setEphemeral(true).queue()
-                return@lambda false
-            }
-
-            btnInter.deferEdit().queue()
-
-            fact = fetchFact()
+            val fact = fetchFact()
             embed.setDescription(fact.text)
 
             interaction.hook.editOriginal("").setEmbeds(embed.build()).queue()
-
-            return@lambda false
         }
+
+        interaction.hook.sendMessage("").setEmbeds(embed.build()).setActionRow(btn).queue()
     }
 }

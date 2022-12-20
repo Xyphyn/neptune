@@ -1,26 +1,23 @@
 package us.xylight.neptune.command.roles
 
 import net.dv8tion.jda.api.Permission
-import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Command
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.database.DatabaseHandler
-import us.xylight.neptune.handler.CommandHandler
 import us.xylight.neptune.util.EmbedUtil
 
-class Roles : Command {
+object Roles : Command {
     override val name = "roles"
     override val description = "Commands for selection roles."
     override val options: List<OptionData> = listOf()
-    override val subcommands: List<Subcommand> = listOf(Create(), Add(), Delete(), Edit(), DeleteItem())
+    override val subcommands: List<Subcommand> = listOf(Create, Add, Delete, Edit, DeleteItem)
     override val permission = Permission.MANAGE_ROLES
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        CommandHandler.subcommandFromName(subcommands, interaction.subcommandName!!)?.execute(interaction)
+        subcommands[interaction.subcommandName]?.execute(interaction)
     }
 
     suspend fun onSelect(interaction: StringSelectInteractionEvent) {
@@ -45,6 +42,22 @@ class Roles : Command {
         }
 
         val values: List<Long> = selection.roles.map { role -> role.roleId }
+
+        if (selection.unassigned != null) {
+            if (interaction.values.isEmpty()) {
+                val roleId = interaction.jda.getRoleById(selection.unassigned!!)!!
+                interaction.guild!!.addRoleToMember(
+                    interaction.member!!,
+                    roleId
+                ).queue()
+            } else {
+                val roleId = interaction.jda.getRoleById(selection.unassigned!!)!!
+                interaction.guild!!.removeRoleFromMember(
+                    interaction.member!!,
+                    roleId
+                ).queue()
+            }
+        }
 
         values.forEach { value ->
             if (!interaction.values.contains(value.toString())) {

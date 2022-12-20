@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
 
-class Unmute : Subcommand {
+object Unmute : Subcommand {
     override val name = "unmute"
     override val description = "Unmutes/removes timeout of a user."
     override val options: List<OptionData> = listOf(
@@ -22,7 +22,7 @@ class Unmute : Subcommand {
             "Unmute",
             "was unmuted.",
             null,
-            Config.successIcon,
+            Config.successIcon.toString(),
             user.asUser
         )
 

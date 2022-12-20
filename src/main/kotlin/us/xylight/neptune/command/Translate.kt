@@ -5,25 +5,20 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
-import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
-import net.dv8tion.jda.api.interactions.Interaction
+import net.dv8tion.jda.api.interactions.commands.Command.Choice
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
-import net.dv8tion.jda.api.interactions.commands.Command.Choice
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import us.xylight.neptune.config.Config
-import us.xylight.neptune.handler.CommandHandler
 import us.xylight.neptune.util.EmbedUtil
 import kotlin.math.roundToInt
 
-class Translate : Command {
+object Translate : Command {
     private val choices: List<Choice> = listOf(
         Choice("English", "en"),
         Choice("Spanish", "es"),
@@ -124,7 +119,7 @@ class Translate : Command {
         val embed =
             EmbedUtil.simpleEmbed("Translation", "")
                 .addField("Input", text.asString, false)
-                .addField("Translated", Config.loadIcon, false)
+                .addField("Translated", Config.loadIcon.toString(), false)
                 .setFooter("to ${langNames[lang.asString]}")
 
         interaction.reply("").setEmbeds(embed.build()).setEphemeral(silent).queue()

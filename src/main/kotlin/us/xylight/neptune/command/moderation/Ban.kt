@@ -1,5 +1,6 @@
 package us.xylight.neptune.command.moderation
 
+import dev.minn.jda.ktx.interactions.components.button
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -14,10 +15,12 @@ import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.event.Interaction
+import us.xylight.neptune.util.EmbedUtil
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
 
 
-class Ban : Subcommand {
+object Ban : Subcommand {
     override val name = "ban"
     override val description = "Bans a user from the guild."
     override val options: List<OptionData> = listOf(
@@ -33,24 +36,20 @@ class Ban : Subcommand {
 
         embed.setColor(0xff0f0f)
 
-        val btn = Button.of(ButtonStyle.SECONDARY, "moderation:ban:undo:${interaction.id}", "Undo", Emoji.fromFormatted(Config.trashIcon))
-
-        CoroutineScope(Dispatchers.Default).launch {
-            delay(TimeUnit.SECONDS.toMillis(10))
-            runCatching {
-                Interaction.unSubscribe(btn, interaction.hook.retrieveOriginal().complete())
-            }
-        }
-
-        Interaction.subscribe(btn.id!!) lambda@ { btnInter ->
-            if (btnInter.user != interaction.user) {
-                btnInter.reply("That button is not yours.").setEphemeral(true).queue()
-                return@lambda false
+        val btn = interaction.jda.button(
+            ButtonStyle.SECONDARY,
+            "Undo",
+            Emoji.fromFormatted(Config.trashIcon),
+            false,
+            Duration.parse("60s"),
+            interaction.user
+        ) {
+            interaction.hook.retrieveOriginal().queue {
+                message ->
+                message.editMessage("").setActionRow(message.buttons[0].asDisabled())
             }
 
             interaction.guild?.unban(user.asUser)?.queue()
-
-            return@lambda true
         }
 
         interaction.reply("").setEmbeds(embed.build()).setActionRow(btn).queue()
