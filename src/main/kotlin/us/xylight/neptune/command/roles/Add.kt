@@ -30,12 +30,15 @@ object Add : Subcommand {
         val label = interaction.getOption("label")?.asString ?: role.name
         val description = interaction.getOption("description")?.asString ?: ""
         val emoji = interaction.getOption("emoji")?.asString
+        emoji?.let { runCatching { Emoji.fromFormatted(it) }.getOrElse {
+            interaction.replyEmbeds(EmbedUtil.simpleEmbed("Error", "Invalid emoji.", 0xff0f0f).build()).queue()
+            return
+        }  }
 
         val selection = DatabaseHandler.getRoleSelection(id)
 
         if (selection == null) {
-            interaction.reply("")
-                .setEmbeds(EmbedUtil.simpleEmbed("Error", "There is no role picker with that ID.", 0xff0f0f).build())
+            interaction.replyEmbeds(EmbedUtil.simpleEmbed("Error", "There is no role picker with that ID.", 0xff0f0f).build())
                 .queue()
 
             return
