@@ -30,5 +30,5 @@ jobs:
 
       - uses: "actions/upload-artifact@v3"
         with:
-          name: Package
-          path: build/libs/Surveyer-*-all.jar
+          name: JAR
+          path: build/libs/Neptune-*.jar
