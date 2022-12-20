@@ -17,11 +17,8 @@ object CreateAdvanced : Subcommand {
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val question = interaction.getOption("question")!!.asString
         val choicesString = interaction.getOption("choices")!!.asString
-        val choices: Stream<String> = choicesString.split("/")
-            .stream()
-            .limit(9)
+        val choices = choicesString.split("/").take(9)
 
-        Poll.createPollMessage(question, choices
-            .toList(), interaction)
+        Poll.createPollMessage(question, choices, interaction)
     }
 }
