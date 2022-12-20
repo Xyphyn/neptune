@@ -1,10 +1,9 @@
 package us.xylight.neptune.command
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
-import us.xylight.neptune.config.Config
 import us.xylight.neptune.util.EmbedUtil
+import us.xylight.neptune.config.Config
 
 object Ping : Command {
     override val name = "ping"
@@ -15,7 +14,7 @@ object Ping : Command {
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val time = System.currentTimeMillis()
-
+        
         interaction.reply("").setEmbeds(EmbedUtil.simpleEmbed("Pong!", "Calculating ping...").build()).flatMap { v ->
             v.editOriginalEmbeds(
                 EmbedUtil.simpleEmbed(

@@ -65,7 +65,9 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
         }
 
         jda.listener<StringSelectInteractionEvent> {
+            println("Role selection")
             if (it.componentId.split("svy:roles:menu:").size < 2) return@listener
+            println("Role selection - completed")
 
             Roles.onSelect(it)
         }

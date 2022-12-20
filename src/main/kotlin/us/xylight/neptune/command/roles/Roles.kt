@@ -17,7 +17,7 @@ object Roles : Command {
     override val permission = Permission.MANAGE_ROLES
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        subcommands[interaction.name]?.execute(interaction)
+        subcommands[interaction.subcommandName]?.execute(interaction)
     }
 
     suspend fun onSelect(interaction: StringSelectInteractionEvent) {

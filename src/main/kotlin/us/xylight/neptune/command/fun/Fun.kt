@@ -12,6 +12,7 @@ object Fun : Command {
     override val subcommands: List<Subcommand> = listOf(
         Reddit,
         Fact,
+//        RockPaperScissors
     )
     override val permission = null
 

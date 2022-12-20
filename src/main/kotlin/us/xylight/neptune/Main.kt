@@ -64,6 +64,9 @@ fun main() {
 
 
     jda.awaitReady()
+    jda.guilds.forEach { guild ->
+        println("${guild.name}: ${guild.memberCount} | ${guild.id}")
+    }
     println("Ready.")
 
     jda.presence.setPresence(Activity.watching("${jda.guilds.size} guilds"), false)
