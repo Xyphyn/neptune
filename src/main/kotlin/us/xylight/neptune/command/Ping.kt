@@ -19,7 +19,7 @@ object Ping : Command {
             v.editOriginalEmbeds(
                 EmbedUtil.simpleEmbed(
                     "Pong!",
-                    String.format("%s Ping: %d", Config.wifiIcon, (System.currentTimeMillis() - time))
+                    String.format("%s Request ping: %d\nGateway ping: %d", Config.wifiIcon, (System.currentTimeMillis() - time), interaction.jda.gatewayPing)
                 ).build()
             )
         }.queue()
