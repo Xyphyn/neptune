@@ -32,7 +32,7 @@ class Reaction(jda: JDA, commandHandler: CommandHandler) {
             val reactMessageText = reactMessage.contentRaw
             if (reactMessage == null) return@listener
 
-            (commandHandler.commandFromName("translate") as Translate).execute(
+            Translate.execute(
                 reactMessage,
                 reactMessageText,
                 flags[it.reaction.emoji.asReactionCode]!!,
