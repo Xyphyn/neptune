@@ -43,7 +43,7 @@ fun main() {
 
 
     Interaction(jda, commandHandler)
-    Reaction(jda, commandHandler)
+    Reaction(jda)
 
     val commands = jda.updateCommands()
 

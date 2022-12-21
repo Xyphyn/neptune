@@ -9,6 +9,7 @@ import us.xylight.neptune.command.moderation.Moderation
 import us.xylight.neptune.command.poll.Poll
 import us.xylight.neptune.command.roles.Roles
 import us.xylight.neptune.command.time.Time
+import us.xylight.neptune.command.translate.Translate
 import java.util.concurrent.TimeUnit
 
 class CommandHandler {
@@ -38,6 +39,9 @@ class CommandHandler {
             ignoreIfMissing = true
             ignoreIfMalformed = true
         }
-        val translateServer: String = dotenv["TRANSLATOR_URL"]
+
+        val libreTranslateServer: String = dotenv["LIBRETRANSLATE_URL"]
+        val deeplKey: String = dotenv["DEEPL_KEY"]
+        val translator: String = dotenv["TRANSLATOR"]
     }
 }
