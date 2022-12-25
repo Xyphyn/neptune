@@ -17,12 +17,13 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import us.xylight.neptune.command.Command
 import us.xylight.neptune.command.CommandHandler
+import us.xylight.neptune.command.RatelimitedCommand
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.util.EmbedUtil
 import kotlin.math.roundToInt
 
-object Translate : Command {
+object Translate : RatelimitedCommand {
     private val choices: List<Choice> = listOf(
         Choice("English", "en"),
         Choice("Spanish", "es"),
@@ -54,6 +55,8 @@ object Translate : Command {
     )
     override val subcommands: List<Subcommand> = listOf()
     override val permission = null
+
+    override val cooldown: Long = 10_000L
 
     private val client = CommandHandler.httpClient
 

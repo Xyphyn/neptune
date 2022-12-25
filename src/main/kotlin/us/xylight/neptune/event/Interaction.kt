@@ -9,13 +9,17 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import us.xylight.neptune.command.CommandHandler
+import us.xylight.neptune.command.RatelimitedCommand
 import us.xylight.neptune.command.roles.Roles
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.util.EmbedUtil
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.floor
 
 class Interaction(val jda: JDA, commandHandler: CommandHandler) {
+    private val cooldowns = mutableMapOf<Long, Long>()
+
     init {
         jda.listener<SlashCommandInteractionEvent> {
             val command = commandHandler.commandFromName(it.name)
@@ -36,6 +40,28 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                 }
             }
             try {
+                if (command is RatelimitedCommand) {
+                    val cooldown: Long? = cooldowns[it.user.idLong]
+
+                    if (cooldown != null) {
+                        if (cooldown > System.currentTimeMillis()) {
+                            it.replyEmbeds(
+                                EmbedUtil.simpleEmbed(
+                                    "Cooldown",
+                                    "${Config.warningIcon} That command is on cooldown. You may only use this command every ${
+                                        (command.cooldown / 1000)
+                                    } seconds.",
+                                    0xff0f0f
+                                ).build()
+                            ).setEphemeral(true).queue()
+
+                            return@listener
+                        }
+                    }
+
+                    cooldowns[it.user.idLong] = System.currentTimeMillis() + command.cooldown
+                }
+
                 command?.execute(it)
             } catch (exception: Exception) {
                 if (it.user.id != Config.logUser) {
