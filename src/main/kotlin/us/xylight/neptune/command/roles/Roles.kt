@@ -17,7 +17,7 @@ object Roles : RatelimitedCommand {
     override val subcommands: List<Subcommand> = listOf(Create, Add, Delete, Edit, DeleteItem)
     override val permission = Permission.MANAGE_ROLES
 
-    override val cooldown: Long = 60_000L
+    override val cooldown: Long = 5_000L
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         subcommands[interaction.subcommandName]?.execute(interaction)
