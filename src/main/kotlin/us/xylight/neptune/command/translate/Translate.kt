@@ -37,7 +37,7 @@ object Translate : RatelimitedCommand {
     )
 
     override val name = "translate"
-    override val description = "Translates any text to any language!"
+    override val description = "Translates any text."
     override val options: List<OptionData> = listOf(
         OptionData(OptionType.STRING, "text", "The text to translate.", true).setMaxLength(1000),
         OptionData(OptionType.STRING, "language", "The language to translate to.", true).addChoices(
@@ -226,7 +226,7 @@ object Translate : RatelimitedCommand {
                 EmbedUtil.simpleEmbed("Translation", "")
                     .addField("Input", text, false)
                     .addField("Translated", translation.translatedText, false)
-                    .setFooter("${langNames[translation.detectedSourceLanguage]} to ${langNames[lang]} • Called by ${user.name}")
+                    .setFooter("${langNames[translation.detectedSourceLanguage.lowercase()]} to ${langNames[lang]} • Called by ${user.name}")
 
             reply.editMessageEmbeds(
                 embed.build()
