@@ -23,6 +23,8 @@ dependencies {
     implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
     implementation("com.github.minndevelopment:jda-ktx:0.9.6-alpha.22")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+
+    implementation(files("lib/lib.jar"))
 }
 
 tasks.jar {

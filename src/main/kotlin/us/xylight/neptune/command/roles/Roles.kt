@@ -5,16 +5,19 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Command
+import us.xylight.neptune.command.RatelimitedCommand
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
 
-object Roles : Command {
+object Roles : RatelimitedCommand {
     override val name = "roles"
     override val description = "Commands for selection roles."
     override val options: List<OptionData> = listOf()
     override val subcommands: List<Subcommand> = listOf(Create, Add, Delete, Edit, DeleteItem)
     override val permission = Permission.MANAGE_ROLES
+
+    override val cooldown: Long = 5_000L
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         subcommands[interaction.subcommandName]?.execute(interaction)

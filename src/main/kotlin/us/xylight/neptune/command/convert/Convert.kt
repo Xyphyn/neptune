@@ -12,7 +12,8 @@ object Convert : Command {
     override val subcommands: List<Subcommand> = listOf(
         Temperature,
         Length,
-        Weight
+        Weight,
+        Time
     )
     override val permission = null
 

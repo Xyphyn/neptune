@@ -8,36 +8,30 @@ import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.util.EmbedUtil
 import java.text.DecimalFormat
 
-object Weight : Subcommand {
-    /**
-     * An enum to represent temperature units.
-     * @param from Converts from grams to the enum's unit.
-     * @param to Converts from the enum's unit to grams.
-     * @param abbr The abbreviation to use for the temperature. e.g. `g` for grams
-     */
-    enum class WeightUnit(val from: (grams: Float) -> Float, val to: (weight: Float) -> Float, val abbr: String) {
-        GRAMS({ it }, { it }, "g"),
-        KILOGRAMS({ grams -> grams / 1_000F }, { weight -> weight * 1_000F }, "kg"),
-        MILLIGRAM({ grams -> grams * 1_000F }, { weight -> weight / 1_000F }, "mg"),
-        OUNCES({ grams -> grams / 28.35F }, { weight -> weight * 28.35F }, "oz"),
-        POUNDS({ grams -> grams / 453.6F }, { weight -> weight * 453.6F }, "lb"),
-        USATON({ grams -> grams / 907_200F }, { weight -> weight * 907_200 }, "tn"),
-        TON({ grams -> grams / 1_000_000F }, { weight -> weight * 1_000_000F }, "t");
+object Time : Subcommand {
+    enum class TimeUnit(val from: (seconds: Float) -> Float, val to: (time: Float) -> Float, val abbr: String) {
+        SECONDS({ it }, { it }, "s"),
+        MILLISECONDS({ seconds -> seconds * 1000F }, { ms -> ms / 1000F }, "ms"),
+        MINUTES({ seconds -> seconds / 60F }, { minutes -> minutes * 60F }, "m"),
+        HOURS({ seconds -> seconds / 3600F }, { hours -> hours * 3600F }, "h"),
+        DAYS({ seconds -> seconds / 86400F }, { days -> days * 86400F }, "d"),
+        WEEKS({ seconds -> seconds / 604800F }, { weeks -> weeks * 604800F }, "w"),
+        YEARS({ seconds -> seconds / 31536086F }, { years -> years * 31536086F }, "y");
 
         companion object {
-            fun convert(from: WeightUnit, to: WeightUnit, num: Float): Float {
-                val inGrams = from.to(num)
-                return to.from(inGrams)
+            fun convert(from: TimeUnit, to: TimeUnit, num: Float): Float {
+                val inSeconds = from.to(num)
+                return to.from(inSeconds)
             }
         }
     }
 
-    private val unitChoices = WeightUnit.values().map { unit ->
+    private val unitChoices = Weight.WeightUnit.values().map { unit ->
         Command.Choice(unit.name.lowercase().capitalize(), unit.name)
     }
 
-    override val name = "weight"
-    override val description = "Converts weight/mass units."
+    override val name = "time"
+    override val description = "Converts between time."
     override val options: List<OptionData> = listOf(
         OptionData(OptionType.STRING, "from", "The unit to convert from.", true).addChoices(unitChoices),
         OptionData(OptionType.STRING, "to", "The unit to convert to.", true).addChoices(unitChoices),
@@ -45,15 +39,15 @@ object Weight : Subcommand {
     )
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
-        val from = WeightUnit.values()
+        val from = TimeUnit.values()
             .find { interaction.getOption("from")!!.asString.lowercase() == it.name.lowercase() }!!
 
-        val to = WeightUnit.values()
+        val to = TimeUnit.values()
             .find { interaction.getOption("to")!!.asString.lowercase() == it.name.lowercase() }!!
 
         val num = interaction.getOption("num")!!.asDouble
 
-        val converted = WeightUnit.convert(from, to, num.toFloat())
+        val converted = TimeUnit.convert(from, to, num.toFloat())
 
         val dec = DecimalFormat("0.#")
 

@@ -3,11 +3,10 @@ package us.xylight.neptune.event
 import dev.minn.jda.ktx.events.listener
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
-import us.xylight.neptune.command.CommandHandler
-import us.xylight.neptune.command.Translate
+import us.xylight.neptune.command.translate.Translate
 import us.xylight.neptune.config.Config
 
-class Reaction(jda: JDA, commandHandler: CommandHandler) {
+class Reaction(jda: JDA) {
     private val flags: Map<String, String> = mutableMapOf(
         "\uD83C\uDDEC\uD83C\uDDE7" to "en",
         "\uD83C\uDDEA\uD83C\uDDF8" to "es",
@@ -32,7 +31,7 @@ class Reaction(jda: JDA, commandHandler: CommandHandler) {
             val reactMessageText = reactMessage.contentRaw
             if (reactMessage == null) return@listener
 
-            (commandHandler.commandFromName("translate") as Translate).execute(
+            Translate.execute(
                 reactMessage,
                 reactMessageText,
                 flags[it.reaction.emoji.asReactionCode]!!,
