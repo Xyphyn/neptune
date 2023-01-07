@@ -1,8 +1,5 @@
 package us.xylight.neptune.command.translate
 
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
@@ -15,7 +12,9 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import us.xylight.neptune.command.Command
+import us.xylight.multitranslate.Provider
+import us.xylight.multitranslate.enums.Language
+import us.xylight.multitranslate.translators.Translator
 import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.RatelimitedCommand
 import us.xylight.neptune.command.Subcommand
@@ -24,10 +23,12 @@ import us.xylight.neptune.util.EmbedUtil
 import kotlin.math.roundToInt
 
 object Translate : RatelimitedCommand {
+    private val translator: Translator =
+        Translator.Builder().provider(Provider.DEEPL).key(CommandHandler.deeplKey).build()
+
     private val choices: List<Choice> = listOf(
         Choice("English", "en"),
         Choice("Spanish", "es"),
-        Choice("Hebrew", "he"),
         Choice("Japanese", "ja"),
         Choice("Chinese", "zh"),
         Choice("French", "fr"),
@@ -76,46 +77,6 @@ object Translate : RatelimitedCommand {
         encodeDefaults = false
     }
 
-    private fun fetchLibreTranslation(text: String, lang: String, from: String = "auto"): LibreTranslationResponse {
-        val jsonPayload = json.encodeToJsonElement(LibreTranslationRequest(text, from, lang, "text", ""))
-
-        val request = Request.Builder()
-            .method("POST", jsonPayload.toString().toRequestBody("application/json".toMediaTypeOrNull()))
-            .url(CommandHandler.libreTranslateServer)
-            .build()
-
-        client.newCall(request).execute().use { res ->
-            val resText = res.body?.string()!!
-            val translation = Json.decodeFromString<LibreTranslationResponse>(resText)
-
-            res.body?.close()
-
-            return translation
-        }
-    }
-
-    private fun fetchDeepLTranslation(text: List<String>, lang: String, from: String?): DeepLTranslationResponse {
-        val jsonPayload = json.encodeToJsonElement(DeepLTranslationRequest(text, from, lang))
-        println(jsonPayload.toString())
-
-        val request = Request.Builder()
-            .method("POST", jsonPayload.toString().toRequestBody("application/json".toMediaTypeOrNull()))
-            .addHeader("Authorization", CommandHandler.deeplKey)
-            .addHeader("User-Agent", "Neptune/1.0.0")
-            .url("https://api-free.deepl.com/v2/translate")
-            .build()
-
-        client.newCall(request).execute().use { res ->
-            val resText = res.body?.string()!!
-            val translation = json.decodeFromString<DeepLTranslationResponse>(resText)
-
-            res.body?.close()
-
-            return translation
-        }
-    }
-
-
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val text = interaction.getOption("text")!!
         val lang = interaction.getOption("language")!!
@@ -138,52 +99,24 @@ object Translate : RatelimitedCommand {
 
         interaction.reply("").setEmbeds(embed.build()).setEphemeral(silent).queue()
 
-        if (CommandHandler.translator == "LIBRE" || from == "he" || lang.asString == "he") {
-            val translation = fetchLibreTranslation(
-                text.asString,
-                lang.asString,
-                from ?: "auto"
-            )
+        val fromLanguage = if (from != null) {
+            Language.languageFromCode(from)
+        } else null
 
-            val confidence = translation.detectedLanguage?.confidence?.roundToInt()
-            val stringConfidence =
-                if (confidence == null || confidence == 0) "${langNames[from] ?: "Unknown"} " else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
+        val translation = translator.translate(text.asString, Language.languageFromCode(lang.asString)!!, fromLanguage)
+        println(translation.detectedLanguage)
+        embed.clearFields()
+        embed
+            .addField("Input", text.asString, false)
+            .addField("Translated", translation.translatedText, false)
+            .setFooter("${langNames[translation.detectedLanguage?.code?.lowercase()]} to ${langNames[lang.asString]}")
 
-
-            embed.clearFields()
-            embed
-                .addField("Input", text.asString, false)
-                .addField("Translated", translation.translatedText, false)
-                .setFooter("${stringConfidence}to ${langNames[lang.asString]}")
-
-            if (confidence != null && (confidence <= 15 && (from ?: "auto") == "auto")) {
-                embed.addField(
-                    "Notice",
-                    "The language autodetection couldn't accurately detect the input language. Use the 'from' parameter in the </translate:0> command to get a more accurate translation.",
-                    false
-                )
-            }
-
-            interaction.hook.editOriginalEmbeds(
-                embed.build()
-            ).queue()
-        } else {
-            // DEEPL
-            val translation = fetchDeepLTranslation(listOf(text.asString), lang.asString, from).translations[0]
-
-            embed.clearFields()
-            embed
-                .addField("Input", text.asString, false)
-                .addField("Translated", translation.translatedText, false)
-                .setFooter("${langNames[translation.detectedSourceLanguage.lowercase()]} to ${langNames[lang.asString]}")
-
-            interaction.hook.editOriginalEmbeds(
-                embed.build()
-            ).queue()
-        }
+        interaction.hook.editOriginalEmbeds(
+            embed.build()
+        ).queue()
     }
 
-    fun execute(message: Message, text: String, lang: String, user: User) {
+    suspend fun execute(message: Message, text: String, lang: String, user: User) {
         if (message.contentRaw.length > 1000) return
         val reply = message.reply("").setEmbeds(
             EmbedUtil.simpleEmbed("Translation", "")
@@ -193,44 +126,16 @@ object Translate : RatelimitedCommand {
                 .build()
         ).complete()
 
-        if (CommandHandler.translator == "LIBRE" || lang == "he") {
-            val translation = fetchLibreTranslation(text, lang)
+        val translation = translator.translate(text, Language.languageFromCode(lang)!!, null)
 
-            val confidence = translation.detectedLanguage?.confidence?.roundToInt()
-            val stringConfidence =
-                if (confidence == null) "" else "${langNames[translation.detectedLanguage.language]} [${confidence}%] "
+        val embed =
+            EmbedUtil.simpleEmbed("Translation", "")
+                .addField("Input", text, false)
+                .addField("Translated", translation.translatedText, false)
+                .setFooter("${langNames[translation.detectedLanguage?.code?.lowercase()]} to ${langNames[lang]} • Called by ${user.name}")
 
-            val embed =
-                EmbedUtil.simpleEmbed("Translation", "")
-                    .addField("Input", text, false)
-                    .addField("Translated", translation.translatedText, false)
-                    .setFooter("${stringConfidence}to ${langNames[lang]} • Called by ${user.name}")
-
-            if (confidence != null && confidence <= 15) {
-                embed.addField(
-                    "Notice",
-                    "The language autodetection couldn't accurately detect the input language. Use the 'from' parameter in the </translate:0> command to get a more accurate translation.",
-                    false
-                )
-            }
-
-            reply.editMessageEmbeds(
-                embed.build()
-            )
-                .queue()
-        } else {
-            // DEEPL
-            val translation = fetchDeepLTranslation(listOf(text), lang, null).translations[0]
-
-            val embed =
-                EmbedUtil.simpleEmbed("Translation", "")
-                    .addField("Input", text, false)
-                    .addField("Translated", translation.translatedText, false)
-                    .setFooter("${langNames[translation.detectedSourceLanguage.lowercase()]} to ${langNames[lang]} • Called by ${user.name}")
-
-            reply.editMessageEmbeds(
-                embed.build()
-            ).queue()
-        }
+        reply.editMessageEmbeds(
+            embed.build()
+        ).queue()
     }
 }
