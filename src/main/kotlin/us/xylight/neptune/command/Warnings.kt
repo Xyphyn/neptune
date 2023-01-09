@@ -35,7 +35,7 @@ object Warnings : Command {
         val embed: EmbedBuilder = EmbedBuilder()
             .setTitle("Warnings")
             .setDescription(if (warnings.toList().isEmpty()) "No warnings found." else "")
-            .setColor(Config.conf.misc.accent)
+            .setColor(Config.accent)
 
         warnings.toList().reversed().forEach { warn ->
             embed.appendDescription(

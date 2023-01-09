@@ -50,7 +50,7 @@ object Mute : Subcommand {
             "Timeout",
             "was muted for ${if (formatted == "") "${millis / 1000} seconds" else formatted}",
             reason,
-            Config.conf.emoji.mute,
+            Config.muteIcon.toString(),
             user.asUser
         )
         embed.setColor(0xfdd100)

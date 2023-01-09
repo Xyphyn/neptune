@@ -47,7 +47,7 @@ object Fact : Subcommand {
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         interaction.deferReply().queue()
 
-        val embed: EmbedBuilder = EmbedBuilder().setTitle("Random Fact").setDescription(fetchFact().text).setFooter("uselessfacts.jsph.pl").setColor(Config.conf.misc.accent)
+        val embed: EmbedBuilder = EmbedBuilder().setTitle("Random Fact").setDescription(fetchFact().text).setFooter("uselessfacts.jsph.pl").setColor(Config.accent)
 
 
         val btn = interaction.jda.button(ButtonStyle.PRIMARY, "Another!", expiration = Duration.parse("10m"), user = interaction.user) {

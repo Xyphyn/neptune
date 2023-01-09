@@ -37,7 +37,7 @@ object TranslationConfig : Subcommand {
         interaction.hook.sendMessage("").setEmbeds(
             EmbedUtil.simpleEmbed(
                 "Set",
-                "${Config.conf.emoji.success} Configuration updated."
+                "${Config.successIcon} Configuration updated."
             ).build()
         ).queue()
     }

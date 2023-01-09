@@ -28,7 +28,7 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                     it.reply("").setEmbeds(
                         EmbedUtil.simpleEmbed(
                             "Missing Permission",
-                            "${Config.conf.emoji.uac} You do not have the required permissions to execute that command.",
+                            "${Config.uacIcon} You do not have the required permissions to execute that command.",
                             0xff0f0f
                         ).addField(
                             "Required",
@@ -48,7 +48,7 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                             it.replyEmbeds(
                                 EmbedUtil.simpleEmbed(
                                     "Cooldown",
-                                    "${Config.conf.emoji.warning} That command is on cooldown. You may only use this command every ${
+                                    "${Config.warningIcon} That command is on cooldown. You may only use this command every ${
                                         (command.cooldown / 1000)
                                     } seconds.",
                                     0xff0f0f
@@ -64,11 +64,11 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
 
                 command?.execute(it)
             } catch (exception: Exception) {
-                if (it.user.id != Config.conf.user.logging.toString()) {
+                if (it.user.id != Config.logUser) {
                     it.channel.sendMessage("").setEmbeds(
                         EmbedUtil.simpleEmbed(
                             "Error",
-                            "${Config.conf.emoji.error} An error occurred while executing the command. This has been logged.",
+                            "${Config.errorIcon} An error occurred while executing the command. This has been logged.",
                             0xff1f1f
                         ).build()
                     ).queue()
@@ -76,7 +76,7 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                     it.channel.sendMessage("").setEmbeds(
                         EmbedUtil.simpleEmbed(
                             "Error",
-                            "${Config.conf.emoji.error} A `${exception::class.simpleName}` occured while executing the command!",
+                            "${Config.errorIcon} A `${exception::class.simpleName}` occured while executing the command!",
                             0xff0f0f
                         ).addField(
                             "Message",

@@ -26,7 +26,7 @@ object Time : Subcommand {
         }
     }
 
-    private val unitChoices = TimeUnit.values().map { unit ->
+    private val unitChoices = Weight.WeightUnit.values().map { unit ->
         Command.Choice(unit.name.lowercase().capitalize(), unit.name)
     }
 

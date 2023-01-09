@@ -1,12 +1,17 @@
 package us.xylight.neptune.command.translate
 
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.Command.Choice
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import us.xylight.multitranslate.Provider
 import us.xylight.multitranslate.enums.Language
 import us.xylight.multitranslate.translators.Translator
@@ -15,6 +20,7 @@ import us.xylight.neptune.command.RatelimitedCommand
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.util.EmbedUtil
+import kotlin.math.roundToInt
 
 object Translate : RatelimitedCommand {
     private val translator: Translator =
@@ -88,7 +94,7 @@ object Translate : RatelimitedCommand {
         val embed =
             EmbedUtil.simpleEmbed("Translation", "")
                 .addField("Input", text.asString, false)
-                .addField("Translated", Config.conf.emoji.load, false)
+                .addField("Translated", Config.loadIcon, false)
                 .setFooter("to ${langNames[lang.asString]}")
 
         interaction.reply("").setEmbeds(embed.build()).setEphemeral(silent).queue()
@@ -98,7 +104,7 @@ object Translate : RatelimitedCommand {
         } else null
 
         val translation = translator.translate(text.asString, Language.languageFromCode(lang.asString)!!, fromLanguage)
-
+        println(translation.detectedLanguage)
         embed.clearFields()
         embed
             .addField("Input", text.asString, false)
@@ -115,7 +121,7 @@ object Translate : RatelimitedCommand {
         val reply = message.reply("").setEmbeds(
             EmbedUtil.simpleEmbed("Translation", "")
                 .addField("Input", message.contentRaw, false)
-                .addField("Translated", Config.conf.emoji.load, false)
+                .addField("Translated", Config.loadIcon, false)
                 .setFooter("to ${langNames[lang]}")
                 .build()
         ).complete()

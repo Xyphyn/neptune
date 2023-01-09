@@ -28,13 +28,13 @@ object DeleteWarning : Subcommand {
 
         if (history.deletedCount <= 0) {
             interaction.hook.sendMessage("").setEmbeds(
-                EmbedUtil.simpleEmbed("Failed to delete", "${Config.conf.emoji.error} That warning is not from this guild, or it doesn't exist. It was not deleted.", 0xff1f1f).build()
+                EmbedUtil.simpleEmbed("Failed to delete", "${Config.errorIcon} That warning is not from this guild, or it doesn't exist. It was not deleted.", 0xff1f1f).build()
             ).queue()
 
             return
         }
 
-        val embed = EmbedUtil.simpleEmbed("Warning Deletion", "${Config.conf.emoji.trash} Warning of ID `${id.asLong}` has been deleted.")
+        val embed = EmbedUtil.simpleEmbed("Warning Deletion", "${Config.trashIcon} Warning of ID `${id.asLong}` has been deleted.")
         interaction.hook.sendMessage("").setEmbeds(embed.build()).queue()
     }
 
@@ -46,13 +46,13 @@ object DeleteWarning : Subcommand {
 
         if (history.deletedCount <= 0) {
             interaction.hook.sendMessage("").setEmbeds(
-                EmbedUtil.simpleEmbed("Failed to delete", "${Config.conf.emoji.error} That warning is not from this guild, or it doesn't exist. It was not deleted.", 0xff1f1f).build()
+                EmbedUtil.simpleEmbed("Failed to delete", "${Config.errorIcon} That warning is not from this guild, or it doesn't exist. It was not deleted.", 0xff1f1f).build()
             ).queue()
 
             return
         }
 
-        val embed = EmbedUtil.simpleEmbed("Warning Deletion", "${Config.conf.emoji.trash} Warning of ID `${id}` has been deleted.")
+        val embed = EmbedUtil.simpleEmbed("Warning Deletion", "${Config.trashIcon} Warning of ID `${id}` has been deleted.")
         interaction.hook.sendMessage("").setEmbeds(embed.build()).queue()
     }
 }

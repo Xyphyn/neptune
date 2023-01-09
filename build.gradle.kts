@@ -25,8 +25,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 
     implementation(files("lib/lib.jar"))
-
-    implementation("com.charleskorn.kaml:kaml:0.49.0")
 }
 
 tasks.jar {
@@ -47,15 +45,6 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDir("resources")
-        }
-    }
-}
-
 application {
     mainClass.set("us.xylight.neptune.MainKt")
-
 }

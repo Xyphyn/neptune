@@ -32,14 +32,14 @@ object Ban : Subcommand {
         val user = interaction.getOption("user")!!
         val reason = interaction.getOption("reason")?.asString ?: "No reason provided."
 
-        val embed = Moderation.punishEmbed("Ban", "was banned.", reason, Config.conf.emoji.ban, user.asUser)
+        val embed = Moderation.punishEmbed("Ban", "was banned.", reason, Config.banIcon, user.asUser)
 
         embed.setColor(0xff0f0f)
 
         val btn = interaction.jda.button(
             ButtonStyle.SECONDARY,
             "Undo",
-            Emoji.fromFormatted(Config.conf.emoji.trash),
+            Emoji.fromFormatted(Config.trashIcon),
             false,
             Duration.parse("60s"),
             interaction.user

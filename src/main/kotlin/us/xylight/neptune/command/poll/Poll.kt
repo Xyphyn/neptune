@@ -31,12 +31,12 @@ object Poll : Command {
         choices: List<String>,
         interaction: SlashCommandInteractionEvent
     ) {
-        val embed = EmbedBuilder().setTitle(question).setColor(Config.conf.misc.accent)
+        val embed = EmbedBuilder().setTitle(question).setColor(Config.accent)
         choices.forEachIndexed { index, choice ->
             embed.addField(nums[index], choice, false)
         }
 
-        interaction.replyEmbeds(embed.build()).queue()
+        interaction.reply("").setEmbeds(embed.build()).queue()
         interaction.hook.retrieveOriginal().queue { message ->
             choices.forEachIndexed { index, _ ->
                 message.addReaction(Emoji.fromUnicode(nums[index])).queue()
