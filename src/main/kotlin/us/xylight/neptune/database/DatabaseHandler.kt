@@ -2,6 +2,7 @@ package us.xylight.neptune.database
 
 import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.coroutine.CoroutineDatabase
+import org.litote.kmongo.coroutine.insertOne
 import org.litote.kmongo.descending
 import org.litote.kmongo.eq
 import us.xylight.neptune.config.Config
@@ -15,9 +16,9 @@ object DatabaseHandler {
 
     fun create(database: CoroutineDatabase) {
         db = database
-        warnings = db!!.getCollection("warnings")
-        configs = db!!.getCollection("configs")
-        roles = db!!.getCollection("roles")
+        warnings = db!!.getCollection(Config.conf.database.warnings)
+        configs = db!!.getCollection(Config.conf.database.configs)
+        roles = db!!.getCollection(Config.conf.database.roles)
     }
 
     suspend fun getRoleSelection(selectId: Long): RoleSelect? {

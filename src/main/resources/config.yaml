@@ -12,3 +12,7 @@ user:
   logging: 735626570399481878
 misc:
   accent: 0xbd00ff
+database:
+  warnings: warnings
+  configs: configs
+  roles: roles
