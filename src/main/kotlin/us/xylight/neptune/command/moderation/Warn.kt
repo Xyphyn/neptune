@@ -52,14 +52,14 @@ object Warn : Subcommand {
         )
 
         val embed =
-            Moderation.punishEmbed("Warning", "was warned.", reason, Config.warningIcon.toString(), user.asUser)
+            Moderation.punishEmbed("Warning", "was warned.", reason, Config.conf.emoji.warning, user.asUser)
 
         embed.setColor(0xfdd100)
 
         val btn = interaction.jda.button(
             ButtonStyle.SECONDARY,
             "Undo",
-            Emoji.fromFormatted(Config.trashIcon.toString()),
+            Emoji.fromFormatted(Config.conf.emoji.trash),
             false,
             Duration.parse("60s"),
             interaction.user
@@ -96,7 +96,7 @@ object Warn : Subcommand {
                 "Timeout",
                 "was muted for 3 hours",
                 "Automatic mute after ${config.moderation.warningThresh} warnings within 72 hours.",
-                Config.muteIcon.toString(),
+                Config.conf.emoji.mute,
                 user.asUser
             )
 
