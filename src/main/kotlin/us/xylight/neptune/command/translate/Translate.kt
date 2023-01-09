@@ -88,7 +88,7 @@ object Translate : RatelimitedCommand {
         val embed =
             EmbedUtil.simpleEmbed("Translation", "")
                 .addField("Input", text.asString, false)
-                .addField("Translated", Config.loadIcon, false)
+                .addField("Translated", Config.conf.emoji.load, false)
                 .setFooter("to ${langNames[lang.asString]}")
 
         interaction.reply("").setEmbeds(embed.build()).setEphemeral(silent).queue()
@@ -115,7 +115,7 @@ object Translate : RatelimitedCommand {
         val reply = message.reply("").setEmbeds(
             EmbedUtil.simpleEmbed("Translation", "")
                 .addField("Input", message.contentRaw, false)
-                .addField("Translated", Config.loadIcon, false)
+                .addField("Translated", Config.conf.emoji.load, false)
                 .setFooter("to ${langNames[lang]}")
                 .build()
         ).complete()
