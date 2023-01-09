@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 data class YamlConfig(
     val emoji: Emojis,
     val user: UserConfig,
-    val misc: MiscConfig
+    val misc: MiscConfig,
+    val database: DatabaseConfig
 )
 
 @Serializable
@@ -30,4 +31,11 @@ data class UserConfig(
 @Serializable
 data class MiscConfig(
     val accent: Int
+)
+
+@Serializable
+data class DatabaseConfig(
+    val warnings: String,
+    val configs: String,
+    val roles: String
 )
