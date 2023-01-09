@@ -11,7 +11,7 @@ import java.nio.file.Paths
 
 object Config {
     // Configs are server configs. YamlConfig is basic configs, stored in resources/config.yaml.
-    val inputStream: InputStream = Files.newInputStream(Paths.get("src/main/resources/config.yaml"))
+    val inputStream: InputStream = ClassLoader.getSystemResourceAsStream("config.yaml")
     val conf = Yaml.default.decodeFromStream<YamlConfig>(inputStream)
 
     private val configs = mutableMapOf<Long, ServerConfig>()
