@@ -19,7 +19,7 @@ object Ping : Command {
             v.editOriginalEmbeds(
                 EmbedUtil.simpleEmbed(
                     "Pong!",
-                    "${Config.wifiIcon} Request ping: ${System.currentTimeMillis() - time}ms\nGateway ping: ${interaction.jda.gatewayPing}ms"
+                    "${Config.conf.emoji.wifi} Request ping: ${System.currentTimeMillis() - time}ms\nGateway ping: ${interaction.jda.gatewayPing}ms"
                 ).build()
             )
         }.queue()

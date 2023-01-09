@@ -22,7 +22,7 @@ object Unmute : Subcommand {
             "Unmute",
             "was unmuted.",
             null,
-            Config.successIcon.toString(),
+            Config.conf.emoji.success,
             user.asUser
         )
 

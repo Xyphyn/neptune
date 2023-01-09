@@ -1,0 +1,14 @@
+emoji:
+  wifi: <:wifi:1039979732638384179>
+  error: <:BSOD:984972563358814228>
+  warning: <:WindowsWarning:977721596846436392>
+  mute: <:WindowsShieldWarning:989709614918553620>
+  uac: <:WindowsShieldUAC:999005696483926017>
+  trash: <:WindowsRecycleBin:1042228356000792586>
+  success: <:WindowsSuccess:977721596468928533>
+  ban: <:WindowsShieldFailure:1042228312476483615>
+  load: <a:firefoxload:1000449757543677952>
+user:
+  logging: 735626570399481878
+misc:
+  accent: 0xbd00ff

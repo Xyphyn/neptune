@@ -48,7 +48,7 @@ object Reddit : Subcommand {
             interaction.hook.sendMessage("").setEmbeds(
                 EmbedUtil.simpleEmbed(
                     "Error",
-                    "${Config.errorIcon} There was an error fetching posts. It's likely that the subreddit is private, or does not exist.",
+                    "${Config.conf.emoji.error} There was an error fetching posts. It's likely that the subreddit is private, or does not exist.",
                     0xff1f1f
                 ).build()
             ).queue()
@@ -58,7 +58,7 @@ object Reddit : Subcommand {
 
         if (posts.isEmpty()) {
             interaction.hook.sendMessage("").setEmbeds(
-                EmbedUtil.simpleEmbed("Error", "${Config.errorIcon} That subreddit has no posts.", 0xff1f1f).build()
+                EmbedUtil.simpleEmbed("Error", "${Config.conf.emoji.error} That subreddit has no posts.", 0xff1f1f).build()
             ).queue()
             return
         }
@@ -85,7 +85,7 @@ object Reddit : Subcommand {
 
         fun update(index: Int) {
             val embed = EmbedBuilder().setTitle(posts[index].data.title, "https://reddit.com${posts[index].data.url}")
-                .setDescription(posts[index].data.text!!).setColor(Config.accent)
+                .setDescription(posts[index].data.text!!).setColor(Config.conf.misc.accent)
                 .setFooter("👍 ${posts[index].data.upvotes} 💬 ${posts[index].data.commentCount}")
 
             if (!(posts[index].data.isVideo)) embed.setImage(posts[index].data.mediaUrl)

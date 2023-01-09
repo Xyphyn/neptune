@@ -40,7 +40,6 @@ class CommandHandler {
             ignoreIfMalformed = true
         }
 
-        val libreTranslateServer: String = dotenv["LIBRETRANSLATE_URL"]
         val deeplKey: String = dotenv["DEEPL_KEY"]
         val translator: String = dotenv["TRANSLATOR"]
     }
