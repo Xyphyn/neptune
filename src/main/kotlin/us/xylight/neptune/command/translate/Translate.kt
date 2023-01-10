@@ -101,7 +101,7 @@ object Translate : RatelimitedCommand {
         embed
             .addField("Input", text.asString, false)
             .addField("Translated", translation.translatedText, false)
-            .setFooter("${langNames[translation.detectedLanguage?.code?.lowercase()]} to ${langNames[lang.asString]}")
+            .setFooter("${langNames[translation.detectedLanguage?.code?.lowercase()] ?: "\uD83C\uDFF3️ Unknown"} to ${langNames[lang.asString]}")
 
         Logger.log("Translation | From: ${translation.detectedLanguage} | To: ${lang.asString} | Text: ${translation.translatedText}", LogLevel.VERBOSE)
 
@@ -126,7 +126,7 @@ object Translate : RatelimitedCommand {
             EmbedUtil.simpleEmbed("Translation", "")
                 .addField("Input", text, false)
                 .addField("Translated", translation.translatedText, false)
-                .setFooter("${langNames[translation.detectedLanguage?.code?.lowercase()]} to ${langNames[lang]} • Called by ${user.name}")
+                .setFooter("${langNames[translation.detectedLanguage?.code?.lowercase()] ?: "\uD83C\uDFF3️ Unknown"} to ${langNames[lang]} • Called by ${user.name}")
 
         reply.editMessageEmbeds(
             embed.build()
