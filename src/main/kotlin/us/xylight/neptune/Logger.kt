@@ -11,7 +11,8 @@ enum class LogLevel(val priority: Int, val color: String) {
 }
 
 object Logger {
-    var logLevel = LogLevel.INFO
+
+    var logLevel = LogLevel.VERBOSE
 
     fun log(message: String, level: LogLevel) {
         if (level.priority <= logLevel.priority) {

@@ -128,10 +128,10 @@ object Translate : RatelimitedCommand {
                 .addField("Translated", translation.translatedText, false)
                 .setFooter("${langNames[translation.detectedLanguage?.code?.lowercase()]} to ${langNames[lang]} • Called by ${user.name}")
 
-        Logger.log("Reaction translation | From: ${translation.detectedLanguage} | To: ${lang} | Text: ${translation.translatedText}", LogLevel.VERBOSE)
-
         reply.editMessageEmbeds(
             embed.build()
         ).queue()
+
+        Logger.log("Reaction translation | From: ${translation.detectedLanguage} | To: $lang | Text: ${translation.translatedText}", LogLevel.VERBOSE)
     }
 }
