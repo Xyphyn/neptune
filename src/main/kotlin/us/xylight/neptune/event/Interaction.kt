@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.buttons.Button
+import us.xylight.neptune.LogLevel
+import us.xylight.neptune.Logger
 import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.RatelimitedCommand
 import us.xylight.neptune.command.roles.Roles
@@ -72,6 +74,10 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                             0xff1f1f
                         ).build()
                     ).queue()
+
+                    Logger.log("Error in ${it.guild?.name} - Command: ${it.name}", LogLevel.ERROR)
+                    Logger.log(exception.stackTrace.toString(), LogLevel.ERROR)
+
                 } else {
                     it.channel.sendMessage("").setEmbeds(
                         EmbedUtil.simpleEmbed(
@@ -85,15 +91,15 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                         ).build()
                     ).queue()
 
-                    exception.printStackTrace()
+                    Logger.log(exception.stackTrace.toString(), LogLevel.ERROR)
                 }
             }
         }
 
         jda.listener<StringSelectInteractionEvent> {
-            println("Role selection")
+
+            Logger.log("Role selection in ${it.guild?.name} - ${it.values}", LogLevel.VERBOSE)
             if (it.componentId.split("svy:roles:menu:").size < 2) return@listener
-            println("Role selection - completed")
 
             Roles.onSelect(it)
         }

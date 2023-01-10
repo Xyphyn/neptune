@@ -81,6 +81,6 @@ object Roles : RatelimitedCommand {
             ).queue()
         }
 
-        interaction.reply("").setEmbeds(EmbedUtil.simpleEmbed("Success", "Successfully gave you those roles.").build()).setEphemeral(true).queue()
+        interaction.replyEmbeds(EmbedUtil.simpleEmbed("Success", "Successfully gave you those roles.").build()).setEphemeral(true).queue()
     }
 }
