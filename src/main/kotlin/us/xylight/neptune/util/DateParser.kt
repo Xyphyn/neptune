@@ -5,7 +5,6 @@ import java.util.regex.Pattern
 
 class DateParser {
     companion object {
-
         private val pattern = Pattern.compile("(\\d+)([hmsdw])")
         // <number>[s, m, h, d]
         fun millisFromTime(time: String): Long {

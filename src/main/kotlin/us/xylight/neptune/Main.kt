@@ -16,13 +16,15 @@ import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.event.Interaction
 import us.xylight.neptune.event.Reaction
 
-fun main() {
-    println("Starting...")
+val dotenv = dotenv {
+    ignoreIfMissing = true
+    ignoreIfMalformed = true
+}
 
-    val dotenv = dotenv {
-        ignoreIfMissing = true
-        ignoreIfMalformed = true
-    }
+fun main() {
+    val logLevel = dotenv["LOGLEVEL"]
+    LogLevel.values().find { it.name.lowercase() == logLevel.lowercase() }?.let { Logger.logLevel = it }
+
 
     val token = dotenv["TOKEN"]
     val mongoURI = dotenv["MONGO"]
