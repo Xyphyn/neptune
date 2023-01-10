@@ -16,13 +16,15 @@ import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.event.Interaction
 import us.xylight.neptune.event.Reaction
 
-fun main() {
-    println("Starting...")
+val dotenv = dotenv {
+    ignoreIfMissing = true
+    ignoreIfMalformed = true
+}
 
-    val dotenv = dotenv {
-        ignoreIfMissing = true
-        ignoreIfMalformed = true
-    }
+fun main() {
+    val logLevel = dotenv["LOGLEVEL"]
+    LogLevel.values().find { it.name.lowercase() == logLevel.lowercase() }?.let { Logger.logLevel = it }
+
 
     val token = dotenv["TOKEN"]
     val mongoURI = dotenv["MONGO"]
@@ -42,7 +44,6 @@ fun main() {
     val jda = light(token, enableCoroutines = true) {
         intents += gatewayIntents
     }
-
 
     Interaction(jda, commandHandler)
     Reaction(jda)
@@ -66,13 +67,15 @@ fun main() {
 
 
     jda.awaitReady()
+
     jda.guilds.forEach { guild ->
-        println("${guild.name}: ${guild.memberCount} | ${guild.id}")
+        Logger.log("${guild.name}: ${guild.memberCount} | ${guild.id}", LogLevel.INFO)
     }
-    println("Ready.")
+
+    Logger.log("Logged in as ${jda.selfUser.name}", LogLevel.VERBOSE)
 
     jda.listener<GuildJoinEvent> {
-        println("New guild joined: ${it.guild.name} - ${it.guild.memberCount} members")
+        Logger.log("New guild joined: ${it.guild.name} - ${it.guild.memberCount} members", LogLevel.INFO)
         jda.presence.setPresence(Activity.watching("${jda.guilds.size} guilds"), false)
     }
 

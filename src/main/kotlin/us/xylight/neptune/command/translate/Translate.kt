@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.multitranslate.Provider
 import us.xylight.multitranslate.enums.Language
 import us.xylight.multitranslate.translators.Translator
+import us.xylight.neptune.LogLevel
+import us.xylight.neptune.Logger
 import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.RatelimitedCommand
 import us.xylight.neptune.command.Subcommand
@@ -67,10 +69,6 @@ object Translate : RatelimitedCommand {
         "ru" to "\uD83C\uDDF7\uD83C\uDDFA Russian"
     )
 
-    private val json = Json {
-        encodeDefaults = false
-    }
-
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val text = interaction.getOption("text")!!
         val lang = interaction.getOption("language")!!
@@ -105,6 +103,8 @@ object Translate : RatelimitedCommand {
             .addField("Translated", translation.translatedText, false)
             .setFooter("${langNames[translation.detectedLanguage?.code?.lowercase()]} to ${langNames[lang.asString]}")
 
+        Logger.log("Translation | From: ${translation.detectedLanguage} | To: ${lang.asString} | Text: ${translation.translatedText}", LogLevel.VERBOSE)
+
         interaction.hook.editOriginalEmbeds(
             embed.build()
         ).queue()
@@ -131,5 +131,7 @@ object Translate : RatelimitedCommand {
         reply.editMessageEmbeds(
             embed.build()
         ).queue()
+
+        Logger.log("Reaction translation | From: ${translation.detectedLanguage} | To: $lang | Text: ${translation.translatedText}", LogLevel.VERBOSE)
     }
 }
