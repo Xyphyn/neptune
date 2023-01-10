@@ -41,6 +41,5 @@ class CommandHandler {
         }
 
         val deeplKey: String = dotenv["DEEPL_KEY"]
-        val translator: String = dotenv["TRANSLATOR"]
     }
 }
