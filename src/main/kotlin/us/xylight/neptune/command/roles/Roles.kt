@@ -4,6 +4,8 @@ import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
+import us.xylight.neptune.LogLevel
+import us.xylight.neptune.Logger
 import us.xylight.neptune.command.Command
 import us.xylight.neptune.command.RatelimitedCommand
 import us.xylight.neptune.command.Subcommand
@@ -40,6 +42,8 @@ object Roles : RatelimitedCommand {
                     0xff0f0f
                 ).build()
             ).queue()
+
+            Logger.log("Missing role selector | ${interaction.guild?.name} | $id", LogLevel.WARNING)
 
             return
         }
