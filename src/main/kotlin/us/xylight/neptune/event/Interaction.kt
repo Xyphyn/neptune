@@ -75,8 +75,8 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                         ).build()
                     ).queue()
 
-                    Logger.log("Error in ${it.guild?.name} - Command: ${it.name} - Subcommand: ${it.subcommandName ?: "None"}", LogLevel.ERROR)
-                    exception.printStackTrace()
+                    Logger.log("Error in ${it.guild?.name} - Command: ${it.name}", LogLevel.ERROR)
+                    Logger.log(exception.stackTrace.toString(), LogLevel.ERROR)
 
                 } else {
                     it.channel.sendMessage("").setEmbeds(
@@ -91,8 +91,7 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                         ).build()
                     ).queue()
 
-                    Logger.log("Error in ${it.guild?.name} - Command: ${it.name} - Subcommand: ${it.subcommandName ?: "None"}", LogLevel.ERROR)
-                    exception.printStackTrace()
+                    Logger.log(exception.stackTrace.toString(), LogLevel.ERROR)
                 }
             }
         }
