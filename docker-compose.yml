@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  bot:
+    build: .
+    environment:
+      - MONGO=mongodb://mongo:27017
+      - MONGO_DATABASE=neptune
+    env_file: .env
+    read_only: true
+
+  mongo:
+    image: mongo:4
+    volumes:
+      - db:/data/db
+    restart: unless-stopped
+
+volumes:
+  db:
