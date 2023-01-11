@@ -39,7 +39,14 @@ object DeleteItem : Subcommand {
             return
         }
 
-        if (selection.guildId != interaction.guild!!.idLong) return
+        if (selection.guildId != interaction.guild!!.idLong) {
+
+            interaction.reply("")
+                .setEmbeds(EmbedUtil.simpleEmbed("Error", "The role picker of that ID does not belong to this guild.", 0xff0f0f).build())
+                .queue()
+
+            return
+        }
 
         selection.roles.removeAt(index - 1)
 
