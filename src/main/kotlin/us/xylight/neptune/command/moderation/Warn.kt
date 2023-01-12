@@ -1,28 +1,25 @@
 package us.xylight.neptune.command.moderation
 
-import dev.minn.jda.ktx.interactions.components.button
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import dev.minn.jda.ktx.events.awaitButton
+import dev.minn.jda.ktx.interactions.components.secondary
+import kotlinx.coroutines.*
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
-import net.dv8tion.jda.api.interactions.components.buttons.Button
-import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import org.litote.kmongo.eq
 import org.litote.kmongo.gt
+import us.xylight.neptune.LogLevel
+import us.xylight.neptune.Logger
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Warning
-import us.xylight.neptune.event.Interaction
+import us.xylight.neptune.util.ButtonUtil
 import us.xylight.neptune.util.EmbedUtil
 import java.time.Instant
 import java.util.concurrent.TimeUnit
-import kotlin.time.Duration
-import kotlin.time.DurationUnit
+import kotlin.time.Duration.Companion.seconds
 
 object Warn : Subcommand {
     override val name = "warn"
@@ -65,23 +62,26 @@ object Warn : Subcommand {
 
         embed.setColor(0xfdd100)
 
-        val btn = interaction.jda.button(
-            ButtonStyle.SECONDARY,
+        val btn = secondary(
+            "svy:moderation:warn:undo:${interaction.id}",
             "Undo",
             Emoji.fromFormatted(Config.conf.emoji.trash),
             false,
-            Duration.parse("60s"),
-            interaction.user
-        ) {
-            interaction.hook.retrieveOriginal().queue {
-                message ->
-                interaction.hook.editOriginal("").setActionRow(message.buttons[0].asDisabled()).queue()
-            }
+        )
 
-            DeleteWarning.execute(it, id)
+        GlobalScope.launch {
+            withTimeoutOrNull(10.seconds) {
+                val event = interaction.user.awaitButton(btn)
+
+                interaction.hook.retrieveOriginal().queue { it.editMessageComponents(ButtonUtil.disableButtons(it.buttons)).queue() }
+
+                DeleteWarning.execute(event.interaction, id)
+            } ?: interaction.hook.retrieveOriginal().queue {
+                it.editMessageComponents(ButtonUtil.disableButtons(it.buttons)).queue()
+            }
         }
 
-        interaction.hook.sendMessage("").setEmbeds(embed.build())
+        interaction.hook.sendMessageEmbeds(embed.build())
             .setActionRow(btn)
             .setEphemeral(silent)
             .queue()
