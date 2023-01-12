@@ -32,6 +32,14 @@ object Ban : Subcommand {
         val user = interaction.getOption("user")!!
         val reason = interaction.getOption("reason")?.asString ?: "No reason provided."
 
+        if (!interaction.member!!.canInteract(user.asMember!!)) {
+            val embed = EmbedUtil.simpleEmbed("Error", "${Config.conf.emoji.uac} You are unable to interact with ${user.asUser.asMention}. Do they have a higher permission than you?")
+
+            interaction.replyEmbeds(embed.build()).queue()
+
+            return
+        }
+
         val embed = Moderation.punishEmbed("Ban", "was banned.", reason, Config.conf.emoji.ban, user.asUser)
 
         embed.setColor(0xff0f0f)

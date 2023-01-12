@@ -26,6 +26,14 @@ object Mute : Subcommand {
         val time = interaction.getOption("time")!!
         val reason = interaction.getOption("reason")?.asString ?: "No reason provided."
 
+        if (!interaction.member!!.canInteract(user.asMember!!)) {
+            val embed = EmbedUtil.simpleEmbed("Error", "${Config.conf.emoji.uac} You are unable to interact with ${user.asUser.asMention}. Do they have a higher permission than you?")
+
+            interaction.replyEmbeds(embed.build()).queue()
+
+            return
+        }
+
         val millis = DateParser.millisFromTime(time.asString)
 
         try {

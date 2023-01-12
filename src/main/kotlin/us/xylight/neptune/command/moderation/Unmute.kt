@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
+import us.xylight.neptune.util.EmbedUtil
 
 object Unmute : Subcommand {
     override val name = "unmute"
@@ -15,6 +16,14 @@ object Unmute : Subcommand {
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
         val user = interaction.getOption("user")!!
+
+        if (!interaction.member!!.canInteract(user.asMember!!)) {
+            val embed = EmbedUtil.simpleEmbed("Error", "${Config.conf.emoji.uac} You are unable to interact with ${user.asUser.asMention}. Do they have a higher permission than you?")
+
+            interaction.replyEmbeds(embed.build()).queue()
+
+            return
+        }
 
         user.asMember?.removeTimeout()?.queue()
 

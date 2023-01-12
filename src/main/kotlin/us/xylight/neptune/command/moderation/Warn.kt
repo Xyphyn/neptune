@@ -18,6 +18,7 @@ import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Warning
 import us.xylight.neptune.event.Interaction
+import us.xylight.neptune.util.EmbedUtil
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
@@ -39,6 +40,14 @@ object Warn : Subcommand {
         val reason = interaction.getOption("reason")?.asString ?: "No reason provided."
         val silent = interaction.getOption("silent")?.asBoolean ?: false
         val id = DatabaseHandler.getAvailableWarningId()
+
+        if (!interaction.member!!.canInteract(user.asMember!!)) {
+            val embed = EmbedUtil.simpleEmbed("Error", "${Config.conf.emoji.uac} You are unable to interact with ${user.asUser.asMention}. Do they have a higher permission than you?")
+
+            interaction.replyEmbeds(embed.build()).queue()
+
+            return
+        }
 
         DatabaseHandler.warnings!!.insertOne(
             Warning(
