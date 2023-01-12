@@ -28,7 +28,7 @@ object DeleteWarning : Subcommand {
 
         if (history.deletedCount <= 0) {
             interaction.hook.sendMessage("").setEmbeds(
-                EmbedUtil.simpleEmbed("Failed to delete", "${Config.conf.emoji.error} That warning is not from this guild, or it doesn't exist. It was not deleted.", 0xff1f1f).build()
+                EmbedUtil.simpleEmbed("Failed to delete", "${Config.conf.emoji.error} That warning is not from this guild, or it doesn't exist. It was not deleted.", Config.conf.misc.error).build()
             ).queue()
 
             return
@@ -46,7 +46,7 @@ object DeleteWarning : Subcommand {
 
         if (history.deletedCount <= 0) {
             interaction.hook.sendMessage("").setEmbeds(
-                EmbedUtil.simpleEmbed("Failed to delete", "${Config.conf.emoji.error} That warning is not from this guild, or it doesn't exist. It was not deleted.", 0xff1f1f).build()
+                EmbedUtil.simpleEmbed("Failed to delete", "${Config.conf.emoji.error} That warning is not from this guild, or it doesn't exist. It was not deleted.", Config.conf.misc.error).build()
             ).queue()
 
             return

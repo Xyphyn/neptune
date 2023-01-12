@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.command.Subcommand
+import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
 
@@ -22,7 +23,7 @@ object Delete : Subcommand {
 
         if (selection == null) {
             interaction.reply("")
-                .setEmbeds(EmbedUtil.simpleEmbed("Error", "There is no role picker with that ID.", 0xff0f0f).build())
+                .setEmbeds(EmbedUtil.simpleEmbed("Error", "There is no role picker with that ID.", Config.conf.misc.error).build())
                 .queue()
 
             return
@@ -31,7 +32,7 @@ object Delete : Subcommand {
         if (selection.guildId != interaction.guild!!.idLong) {
 
             interaction.reply("")
-                .setEmbeds(EmbedUtil.simpleEmbed("Error", "The role picker of that ID does not belong to this guild.", 0xff0f0f).build())
+                .setEmbeds(EmbedUtil.simpleEmbed("Error", "The role picker of that ID does not belong to this guild.", Config.conf.misc.error).build())
                 .queue()
 
             return

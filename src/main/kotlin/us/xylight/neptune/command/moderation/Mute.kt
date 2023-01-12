@@ -43,7 +43,7 @@ object Mute : Subcommand {
                 EmbedUtil.simpleEmbed(
                     "Error",
                     "Unable to mute that user. Do they have a higher permission than Neptune?",
-                    0xff0f0f
+                    Config.conf.misc.error
                 ).build()
             ).queue()
 

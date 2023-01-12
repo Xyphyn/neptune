@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.utils.FileUpload
+import us.xylight.neptune.config.Config
 import us.xylight.neptune.util.EmbedUtil
 import java.awt.Color
 import java.awt.image.BufferedImage
@@ -33,7 +34,7 @@ object Color : Command {
         }
 
         val color = kotlin.runCatching { Color.decode(colorOp) }.getOrElse {
-            interaction.replyEmbeds(EmbedUtil.simpleEmbed("Error", "That color is invalid. Write it in hex (#FFFFFF)", 0xff0f0f).build()).queue()
+            interaction.replyEmbeds(EmbedUtil.simpleEmbed("Error", "That color is invalid. Write it in hex (#FFFFFF)", Config.conf.misc.error).build()).queue()
             return
         }
 

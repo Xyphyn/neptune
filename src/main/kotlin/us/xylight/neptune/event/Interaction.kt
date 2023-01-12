@@ -31,7 +31,7 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                         EmbedUtil.simpleEmbed(
                             "Missing Permission",
                             "${Config.conf.emoji.uac} You do not have the required permissions to execute that command.",
-                            0xff0f0f
+                            Config.conf.misc.error
                         ).addField(
                             "Required",
                             "`${command.permission!!.name}`",
@@ -53,7 +53,7 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                                     "${Config.conf.emoji.warning} That command is on cooldown. You may only use this command every ${
                                         (command.cooldown / 1000)
                                     } seconds.",
-                                    0xff0f0f
+                                    Config.conf.misc.error
                                 ).build()
                             ).setEphemeral(true).queue()
 
@@ -71,7 +71,7 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                         EmbedUtil.simpleEmbed(
                             "Error",
                             "${Config.conf.emoji.error} An error occurred while executing the command. This has been logged.",
-                            0xff1f1f
+                            Config.conf.misc.error
                         ).build()
                     ).queue()
 
@@ -83,7 +83,7 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                         EmbedUtil.simpleEmbed(
                             "Error",
                             "${Config.conf.emoji.error} A `${exception::class.simpleName}` occured while executing the command!",
-                            0xff0f0f
+                            Config.conf.misc.error
                         ).addField(
                             "Message",
                             exception.message.toString(),

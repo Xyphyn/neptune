@@ -49,7 +49,7 @@ object Reddit : Subcommand {
                 EmbedUtil.simpleEmbed(
                     "Error",
                     "${Config.conf.emoji.error} There was an error fetching posts. It's likely that the subreddit is private, or does not exist.",
-                    0xff1f1f
+                    Config.conf.misc.error
                 ).build()
             ).queue()
             return
@@ -58,7 +58,7 @@ object Reddit : Subcommand {
 
         if (posts.isEmpty()) {
             interaction.hook.sendMessage("").setEmbeds(
-                EmbedUtil.simpleEmbed("Error", "${Config.conf.emoji.error} That subreddit has no posts.", 0xff1f1f).build()
+                EmbedUtil.simpleEmbed("Error", "${Config.conf.emoji.error} That subreddit has no posts.", Config.conf.misc.error).build()
             ).queue()
             return
         }
@@ -112,7 +112,7 @@ object Reddit : Subcommand {
                     Embed {
                         title = "Error"
                         description = "There are too many NSFW posts on that subreddit."
-                        color = 0xff0f0f
+                        color = Config.conf.misc.error
                     }
                 ).queue()
                 return true

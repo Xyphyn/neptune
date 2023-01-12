@@ -77,7 +77,7 @@ object Translate : RatelimitedCommand {
 
         if (Config.getConfig(interaction.guild!!.idLong)?.translation?.enabled == false) {
             interaction.reply("").setEphemeral(true).setEmbeds(
-                EmbedUtil.simpleEmbed("Disabled", "Translation is not enabled in this server.", 0xff0f0f).build()
+                EmbedUtil.simpleEmbed("Disabled", "Translation is not enabled in this server.", Config.conf.misc.error).build()
             ).queue()
 
             return
