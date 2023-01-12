@@ -27,11 +27,12 @@ object Moderation : Command {
     }
 
     fun notifyUser(user: User, embed: EmbedBuilder) {
-        user.openPrivateChannel().flatMap { channel ->
+        user.openPrivateChannel().queue { channel ->
+            if (!channel.canTalk()) return@queue
             channel.sendMessage("").setEmbeds(
                 embed.build()
-            )
-        }.queue()
+            ).queue()
+        }
     }
 
     fun punishEmbed(title: String, action: String, reason: String?, icon: String, user: User): EmbedBuilder {
