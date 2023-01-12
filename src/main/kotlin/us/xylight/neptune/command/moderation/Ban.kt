@@ -35,7 +35,7 @@ object Ban : Subcommand {
         if (!interaction.member!!.canInteract(user.asMember!!)) {
             val embed = EmbedUtil.simpleEmbed("Error", "${Config.conf.emoji.uac} You are unable to interact with ${user.asUser.asMention}. Do they have a higher permission than you?")
 
-            interaction.replyEmbeds(embed.build()).queue()
+            interaction.hook.editOriginalEmbeds(embed.build()).queue()
 
             return
         }
