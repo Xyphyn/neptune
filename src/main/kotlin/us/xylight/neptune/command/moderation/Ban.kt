@@ -42,7 +42,7 @@ object Ban : Subcommand {
 
         val embed = Moderation.punishEmbed("Ban", "was banned.", reason, Config.conf.emoji.ban, user.asUser)
 
-        embed.setColor(0xff0f0f)
+        embed.setColor(Config.conf.misc.error)
 
         val btn = interaction.jda.button(
             ButtonStyle.SECONDARY,

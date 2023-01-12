@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption
 import us.xylight.neptune.command.Subcommand
+import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.database.dataclass.Role
 import us.xylight.neptune.util.EmbedUtil
@@ -31,14 +32,14 @@ object Add : Subcommand {
         val description = interaction.getOption("description")?.asString ?: ""
         val emoji = interaction.getOption("emoji")?.asString
         emoji?.let { runCatching { Emoji.fromFormatted(it) }.getOrElse {
-            interaction.replyEmbeds(EmbedUtil.simpleEmbed("Error", "Invalid emoji.", 0xff0f0f).build()).queue()
+            interaction.replyEmbeds(EmbedUtil.simpleEmbed("Error", "Invalid emoji.", Config.conf.misc.error).build()).queue()
             return
         }  }
 
         val selection = DatabaseHandler.getRoleSelection(id)
 
         if (selection == null) {
-            interaction.replyEmbeds(EmbedUtil.simpleEmbed("Error", "There is no role picker with that ID.", 0xff0f0f).build())
+            interaction.replyEmbeds(EmbedUtil.simpleEmbed("Error", "There is no role picker with that ID.", Config.conf.misc.error).build())
                 .queue()
 
             return
@@ -47,7 +48,7 @@ object Add : Subcommand {
         if (selection.guildId != interaction.guild!!.idLong) {
 
             interaction.reply("")
-                .setEmbeds(EmbedUtil.simpleEmbed("Error", "The role picker of that ID does not belong to this guild.", 0xff0f0f).build())
+                .setEmbeds(EmbedUtil.simpleEmbed("Error", "The role picker of that ID does not belong to this guild.", Config.conf.misc.error).build())
                 .queue()
 
             return
@@ -84,6 +85,6 @@ object Add : Subcommand {
         DatabaseHandler.replaceRoleSelection(id, selection)
 
         interaction.reply("").setEphemeral(true)
-            .setEmbeds(EmbedUtil.simpleEmbed("Added", "Added that role to the role picker.").build()).queue()
+            .setEmbeds(EmbedUtil.simpleEmbed("Success", "${Config.conf.emoji.success} Added that role to the role picker.", Config.conf.misc.success).build()).queue()
     }
 }

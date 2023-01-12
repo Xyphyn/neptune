@@ -11,7 +11,9 @@ emoji:
 user:
   logging: 735626570399481878
 misc:
-  accent: 0xbd00ff
+  accent: 0xBD00FF
+  error: 0xFF2F2F
+  success: 0x2BFF75
 database:
   warnings: warnings
   configs: configs

@@ -30,7 +30,9 @@ data class UserConfig(
 
 @Serializable
 data class MiscConfig(
-    val accent: Int
+    val accent: Int,
+    val error: Int,
+    val success: Int
 )
 
 @Serializable

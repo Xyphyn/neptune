@@ -33,7 +33,7 @@ object Unmute : Subcommand {
             null,
             Config.conf.emoji.success,
             user.asUser
-        )
+        ).setColor(Config.conf.misc.success)
 
         interaction.reply("").setEmbeds(embed.build()).queue()
 
