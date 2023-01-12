@@ -9,8 +9,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import org.litote.kmongo.eq
 import org.litote.kmongo.gt
-import us.xylight.neptune.LogLevel
-import us.xylight.neptune.Logger
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
@@ -19,7 +17,7 @@ import us.xylight.neptune.util.ButtonUtil
 import us.xylight.neptune.util.EmbedUtil
 import java.time.Instant
 import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.minutes
 
 object Warn : Subcommand {
     override val name = "warn"
@@ -70,7 +68,7 @@ object Warn : Subcommand {
         )
 
         GlobalScope.launch {
-            withTimeoutOrNull(10.seconds) {
+            withTimeoutOrNull(1.minutes) {
                 val event = interaction.user.awaitButton(btn)
 
                 interaction.hook.retrieveOriginal().queue { it.editMessageComponents(ButtonUtil.disableButtons(it.buttons)).queue() }

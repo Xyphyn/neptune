@@ -2,10 +2,9 @@ package us.xylight.neptune.command.moderation
 
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.Permission
+import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import net.dv8tion.jda.api.exceptions.ContextException
-import net.dv8tion.jda.api.exceptions.ErrorResponseException
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import us.xylight.neptune.LogLevel
 import us.xylight.neptune.Logger
