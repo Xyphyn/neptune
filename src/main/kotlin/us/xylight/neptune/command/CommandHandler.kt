@@ -23,7 +23,8 @@ class CommandHandler {
         Time,
         Roles,
         Config,
-        Convert
+        Convert,
+        Color
     )
 
     fun commandFromName(commandName: String): Command? {
