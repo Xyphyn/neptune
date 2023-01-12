@@ -1,6 +1,7 @@
 package us.xylight.neptune.command.moderation
 
 import dev.minn.jda.ktx.interactions.components.button
+import dev.minn.jda.ktx.messages.Embed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -8,8 +9,10 @@ import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.entities.UserSnowflake
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import net.dv8tion.jda.api.exceptions.HierarchyException
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
+import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import us.xylight.neptune.command.Subcommand
@@ -54,19 +57,27 @@ object Ban : Subcommand {
         ) {
             interaction.hook.retrieveOriginal().queue {
                 message ->
-                message.editMessage("").setActionRow(message.buttons[0].asDisabled())
+                message.editMessageComponents(ActionRow.of(message.buttons[0].asDisabled())).queue()
             }
 
             interaction.guild?.unban(user.asUser)?.queue()
         }
 
-        interaction.reply("").setEmbeds(embed.build()).setActionRow(btn).queue()
-
         embed.setFooter(interaction.guild?.name, interaction.guild?.iconUrl)
 
         Moderation.notifyUser(user.asUser, embed)
 
-        user.asMember?.ban(0, TimeUnit.MILLISECONDS)?.queue()
+        try {
+            user.asMember?.ban(0, TimeUnit.MILLISECONDS)?.queue()
+
+            interaction.replyEmbeds(embed.build()).setActionRow(btn).queue()
+        } catch (e: HierarchyException) {
+            interaction.replyEmbeds(Embed {
+                title = "Error"
+                description = "${Config.conf.emoji.uac} Unable to ban that user. Do they have a higher permission than you?"
+                color = Config.conf.misc.error
+            })
+        }
     }
 
 }
