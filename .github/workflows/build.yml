@@ -31,4 +31,4 @@ jobs:
       - uses: "actions/upload-artifact@v3"
         with:
           name: JAR
-          path: build/libs/Neptune-*.jar
+          path: build/libs/Neptune-*-all.jar
