@@ -44,4 +44,4 @@ Self-hosting is super easy with Docker, follow these steps to get the bot up and
 - You don't need to specify `MONGO` or `MONGO_DATABASE` as they are specified within the compose configuration
 3. Run `docker compose up -d`
 
-You're done. It's that easy
+You're done. It's that easy.
