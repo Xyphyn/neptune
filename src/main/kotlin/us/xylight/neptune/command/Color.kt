@@ -44,6 +44,7 @@ object Color : Command {
 
         val os = ByteArrayOutputStream()
 
+        ImageIO.setUseCache(false)
         ImageIO.write(image, "png", os)
 
         val upload = FileUpload.fromData(os.toByteArray(), "color.png")
