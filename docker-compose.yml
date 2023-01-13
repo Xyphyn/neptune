@@ -8,6 +8,7 @@ services:
       - MONGO_DATABASE=neptune
     env_file: .env
     read_only: true
+    restart: unless-stopped
 
   mongo:
     image: mongo:4
