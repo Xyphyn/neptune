@@ -2,9 +2,12 @@ package us.xylight.neptune.command.moderation
 
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.Permission
+import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
+import us.xylight.neptune.LogLevel
+import us.xylight.neptune.Logger
 import us.xylight.neptune.command.Command
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.util.EmbedUtil
@@ -27,11 +30,14 @@ object Moderation : Command {
     }
 
     fun notifyUser(user: User, embed: EmbedBuilder) {
-        user.openPrivateChannel().flatMap { channel ->
-            channel.sendMessage("").setEmbeds(
+        user.openPrivateChannel().queue { channel ->
+            channel.sendMessageEmbeds(
                 embed.build()
-            )
-        }.queue()
+            ).queue(null) {
+                Logger.log("Unable to notify user ${user.name} of moderation action.", LogLevel.WARNING)
+            }
+
+        }
     }
 
     fun punishEmbed(title: String, action: String, reason: String?, icon: String, user: User): EmbedBuilder {

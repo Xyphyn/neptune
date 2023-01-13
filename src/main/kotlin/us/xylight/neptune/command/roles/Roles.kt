@@ -9,6 +9,7 @@ import us.xylight.neptune.Logger
 import us.xylight.neptune.command.Command
 import us.xylight.neptune.command.RatelimitedCommand
 import us.xylight.neptune.command.Subcommand
+import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.DatabaseHandler
 import us.xylight.neptune.util.EmbedUtil
 
@@ -39,7 +40,7 @@ object Roles : RatelimitedCommand {
                 EmbedUtil.simpleEmbed(
                     "Error",
                     "Could not find that role selector in the database.",
-                    0xff0f0f
+                    Config.conf.misc.error
                 ).build()
             ).queue()
 

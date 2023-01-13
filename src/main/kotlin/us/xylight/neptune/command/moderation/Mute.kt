@@ -1,7 +1,6 @@
 package us.xylight.neptune.command.moderation
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import org.ocpsoft.prettytime.PrettyTime
@@ -26,6 +25,14 @@ object Mute : Subcommand {
         val time = interaction.getOption("time")!!
         val reason = interaction.getOption("reason")?.asString ?: "No reason provided."
 
+        if (!interaction.member!!.canInteract(user.asMember!!)) {
+            val embed = EmbedUtil.simpleEmbed("Error", "${Config.conf.emoji.uac} You are unable to interact with ${user.asUser.asMention}. Do they have a higher permission than you?")
+
+            interaction.hook.editOriginalEmbeds(embed.build()).queue()
+
+            return
+        }
+
         val millis = DateParser.millisFromTime(time.asString)
 
         try {
@@ -35,7 +42,7 @@ object Mute : Subcommand {
                 EmbedUtil.simpleEmbed(
                     "Error",
                     "Unable to mute that user. Do they have a higher permission than Neptune?",
-                    0xff0f0f
+                    Config.conf.misc.error
                 ).build()
             ).queue()
 
