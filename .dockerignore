@@ -1,0 +1,14 @@
+Dockerfile
+docker-compose.yml
+.git
+.github
+
+# Imported from .gitignore
+build
+.gradle
+.idea
+
+.env
+.fleet
+bin
+!gradle/wrapper/*.jar
