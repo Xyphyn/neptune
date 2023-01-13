@@ -34,3 +34,14 @@ Well, what are you waiting for? [Add Neptune now](https://top.gg/bot/97724055964
 
 
 *please*
+
+# Self-hosting
+
+Self-hosting is super easy with Docker, follow these steps to get the bot up and running:
+
+1. Clone the repo
+2. Copy `.env.example` to `.env` and edit the values inside
+- You don't need to specify `MONGO` or `MONGO_DATABASE` as they are specified within the compose configuration
+3. Run `docker compose up -d`
+
+You're done. It's that easy
