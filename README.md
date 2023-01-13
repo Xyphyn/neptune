@@ -45,3 +45,14 @@ Self-hosting is super easy with Docker, follow these steps to get the bot up and
 3. Run `docker compose up -d`
 
 You're done. It's that easy.
+
+### Pros of self-hosting:
+- Verify authenticity of the bot
+- Private, isolated database
+
+### Cons
+- Your computer needs to stay on for the bot to keep running
+- More resource usage when your computer *is* on
+- Likely no support, you're probably on your own.
+
+**If you are to self-host this bot, you may not upload your instance to a site like top.gg or discordlist.gg. You must make your own major modifications.**
