@@ -23,7 +23,7 @@ object DeleteWarning : Subcommand {
         interaction.deferReply().queue()
         val id = interaction.getOption("id")!!
 
-        val history = DatabaseHandler.warnings!!.deleteMany(Warning::id eq id.asLong,
+        val history = DatabaseHandler.warnings.deleteMany(Warning::id eq id.asLong,
             Warning::guild eq interaction.guild!!.id)
 
         if (history.deletedCount <= 0) {
@@ -41,7 +41,7 @@ object DeleteWarning : Subcommand {
     suspend fun execute(interaction: ButtonInteraction, id: Long) {
         interaction.deferReply().queue()
 
-        val history = DatabaseHandler.warnings!!.deleteMany(Warning::id eq id,
+        val history = DatabaseHandler.warnings.deleteMany(Warning::id eq id,
             Warning::guild eq interaction.guild!!.id)
 
         if (history.deletedCount <= 0) {
