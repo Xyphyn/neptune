@@ -53,6 +53,6 @@ You're done. It's that easy.
 ### Cons
 - Your computer needs to stay on for the bot to keep running
 - More resource usage when your computer *is* on
-- Likely no support, you're probably on your own.
+- Likely no support, you're probably on your own.g
 
 **If you are to self-host this bot, you may not upload your instance to a site like top.gg or discordlist.gg. You must make your own major modifications.**
