@@ -7,11 +7,14 @@ import kotlinx.serialization.json.Json
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
+import net.dv8tion.jda.api.interactions.commands.Command
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import okhttp3.Request
+import us.xylight.neptune.LogLevel
+import us.xylight.neptune.Logger
 import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
@@ -21,18 +24,47 @@ import us.xylight.neptune.util.EmbedUtil
 import kotlin.time.Duration
 
 object Reddit : Subcommand {
+    enum class ListingType(val urlName: String) {
+        NEW("new"),
+        HOT("hot"),
+        RISING("rising"),
+        TOP("top"),
+        CONTROVERSIAL("controversial")
+    }
+
+    enum class ListingDuration(val urlName: String) {
+        HOUR("hour"),
+        TODAY("day"),
+        WEEK("week"),
+        MONTH("month"),
+        YEAR("year"),
+        ALL("all")
+    }
 
     override val name = "reddit"
     override val description = "Fetches posts from reddit."
     override val options: List<OptionData> = listOf(
-        OptionData(OptionType.STRING, "subreddit", "What subreddit? (Default r/memes)", false)
+        OptionData(OptionType.STRING, "subreddit", "What subreddit? (Default r/memes)", false),
+        OptionData(OptionType.STRING, "type", "What listing type to show?", false).addChoices(
+            ListingType.values().map {
+                type -> Command.Choice(type.name, type.urlName)
+            }
+        ),
+        OptionData(OptionType.STRING, "duration", "What listing duration to show?", false).addChoices(
+            ListingDuration.values().map {
+                type -> Command.Choice(type.name, type.urlName)
+            }
+        )
     )
     private val client = CommandHandler.httpClient
 
 
     override suspend fun execute(interaction: SlashCommandInteractionEvent) {
+        val type = interaction.getOption("type")?.asString ?: ListingType.HOT.urlName
+        val duration = interaction.getOption("duration")?.asString ?: ListingDuration.TODAY.urlName
+
         val subreddit = interaction.getOption("subreddit")?.asString ?: "memes"
-        val url = "https://reddit.com/r/${subreddit}.json?limit=100"
+        val url = "https://reddit.com/r/${subreddit}/${type}.json?limit=100&t=${duration}"
         interaction.deferReply().queue()
 
         val request = Request.Builder()
@@ -46,7 +78,8 @@ object Reddit : Subcommand {
         }
 
         val body = response.body
-        val listing = runCatching { jsonObj.decodeFromString<Listing>(response.body?.string()!!) }.getOrElse {
+        val str = response.body?.string()!!
+        val listing = runCatching { jsonObj.decodeFromString<Listing>(str) }.getOrElse {
             interaction.hook.sendMessage("").setEmbeds(
                 EmbedUtil.simpleEmbed(
                     "Error",
