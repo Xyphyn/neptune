@@ -27,7 +27,7 @@ object Warnings : Command {
         val member = interaction.getOption("member")!!.asUser
         val guild = interaction.guild!!
 
-        val warnings = DatabaseHandler.warnings!!.find(
+        val warnings = DatabaseHandler.warnings.find(
             Warning::user eq member.id,
             Warning::guild eq guild.id
         )

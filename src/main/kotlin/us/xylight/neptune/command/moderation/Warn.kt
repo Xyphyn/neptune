@@ -44,7 +44,7 @@ object Warn : Subcommand {
             return
         }
 
-        DatabaseHandler.warnings!!.insertOne(
+        DatabaseHandler.warnings.insertOne(
             Warning(
                 interaction.guild!!.id,
                 user.asUser.id,

@@ -9,12 +9,14 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
+import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import okhttp3.Request
 import us.xylight.neptune.command.CommandHandler
 import us.xylight.neptune.command.Subcommand
 import us.xylight.neptune.config.Config
 import us.xylight.neptune.database.dataclass.Listing
+import us.xylight.neptune.util.ButtonUtil
 import us.xylight.neptune.util.EmbedUtil
 import kotlin.time.Duration
 
@@ -57,8 +59,12 @@ object Reddit : Subcommand {
         val posts = listing.subreddit.posts
 
         if (posts.isEmpty()) {
-            interaction.hook.sendMessage("").setEmbeds(
-                EmbedUtil.simpleEmbed("Error", "${Config.conf.emoji.error} That subreddit has no posts.", Config.conf.misc.error).build()
+            interaction.hook.sendMessageEmbeds(
+                Embed {
+                    title = "Error"
+                    description = "${Config.conf.emoji.error} That subreddit has no posts."
+                    color = Config.conf.misc.error
+                }
             ).queue()
             return
         }
@@ -108,13 +114,14 @@ object Reddit : Subcommand {
 
             val prevIndex = skip(index, backwards)
             if (prevIndex == -1) {
-                interaction.reply("").setEmbeds(
+                interaction.hook.editOriginalEmbeds(
                     Embed {
                         title = "Error"
                         description = "There are too many NSFW posts on that subreddit."
                         color = Config.conf.misc.error
                     }
                 ).queue()
+
                 return true
             }
 
@@ -145,6 +152,17 @@ object Reddit : Subcommand {
 
         interaction.hook.editOriginal("").setActionRow(back, next).queue()
 
+        if (index == -1) {
+
+            interaction.hook.editOriginalEmbeds(
+                Embed {
+                    title = "Error"
+                    description = "There are too many NSFW posts on that subreddit."
+                    color = Config.conf.misc.error
+                }
+            ).queue()
+            return
+        }
         update(index)
 
         body?.close()
