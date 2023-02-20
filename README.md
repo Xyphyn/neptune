@@ -1,5 +1,3 @@
-**This project is moving to GitLab [(link)](https://gitlab.com/Xylight/Neptune)
-
 <img src="https://i.imgur.com/niBtKLY.png" />
 A moderation, translation, and poll bot designed to make life easier.
 
