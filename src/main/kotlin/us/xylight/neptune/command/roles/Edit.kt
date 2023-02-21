@@ -16,6 +16,7 @@ object Edit : Subcommand {
         OptionData(OptionType.INTEGER, "id", "The ID of the role picker to edit.", true),
         OptionData(OptionType.STRING, "newtitle", "The new title for the role picker.", true),
         OptionData(OptionType.STRING, "newdesc", "The new description for the role picker.", true),
+        OptionData(OptionType.ATTACHMENT, "newimage", "The new image for the role picker.", false),
         OptionData(OptionType.ROLE, "newunassigned", "The new unassigned role.", false)
     )
 
@@ -24,6 +25,15 @@ object Edit : Subcommand {
         val title = interaction.getOption("newtitle")!!.asString
         val desc = interaction.getOption("newdesc")!!.asString
         val unassigned = interaction.getOption("newunassigned")?.asRole
+        val image = interaction.getOption("newimage")?.asAttachment
+
+        if (!listOf("image/png", "image/jpeg").contains(image?.contentType)) {
+            interaction.replyEmbeds(
+                EmbedUtil.simpleEmbed("Error", "The attachment provided is not a supported image.", Config.conf.misc.error).build()
+            ).setEphemeral(true).queue()
+
+            return
+        }
 
         val selection = DatabaseHandler.getRoleSelection(id)
 
@@ -50,7 +60,7 @@ object Edit : Subcommand {
 
         (interaction.guild!!.getGuildChannelById(selection.channelId) as TextChannel).editMessageEmbedsById(
             selection.msgId,
-            EmbedUtil.simpleEmbed(title, desc).setFooter("ID: ${selection.id}").build()
+            EmbedUtil.simpleEmbed(title, desc).setImage(image?.url).setFooter("ID: ${selection.id}").build()
         ).queue()
 
         interaction.reply("").setEphemeral(true)
