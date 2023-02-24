@@ -27,7 +27,7 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
             val command = commandHandler.commandFromName(it.name)
             if (command?.permission != null) {
                 if (it.member?.hasPermission(command.permission) != true) {
-                    it.reply("").setEmbeds(
+                    it.replyEmbeds(
                         EmbedUtil.simpleEmbed(
                             "Missing Permission",
                             "${Config.conf.emoji.uac} You do not have the required permissions to execute that command.",
@@ -37,7 +37,7 @@ class Interaction(val jda: JDA, commandHandler: CommandHandler) {
                             "`${command.permission!!.name}`",
                             false
                         ).build()
-                    ).queue()
+                    ).setEphemeral(true).queue()
                     return@listener
                 }
             }
