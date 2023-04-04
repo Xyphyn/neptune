@@ -29,7 +29,7 @@ object Create : Subcommand {
         val unassigned = interaction.getOption("unassigned")?.asRole
         val image = interaction.getOption("image")?.asAttachment
 
-        if (!listOf("image/png", "image/jpeg").contains(image?.contentType)) {
+        if (image != null && !listOf("image/png", "image/jpeg").contains(image?.contentType)) {
             interaction.replyEmbeds(
                 EmbedUtil.simpleEmbed("Error", "The attachment provided is not a supported image.", Config.conf.misc.error).build()
             ).setEphemeral(true).queue()
