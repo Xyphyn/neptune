@@ -78,8 +78,6 @@ object Add : Subcommand {
             selection.msgId,
             " "
         ).setActionRow(selectMenu).queue()
-        }.getOrElse {
-            DatabaseHandler.deleteRoleSelection(id)
         }
 
         DatabaseHandler.replaceRoleSelection(id, selection)
